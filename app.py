@@ -8,7 +8,7 @@ from datetime import datetime
 from collections import Counter
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+app.config['SECRET_KEY'] = '0658145f863644a6143bdb370000274e'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['WTF_CSRF_ENABLED'] = True
@@ -134,7 +134,7 @@ def home():
                                department_tags=department_tags,
                                )
 #signup page
-@app.route('/signup',methods=['POST'])
+@app.route('/signup',methods=['POST','GET'])
 def signup():
     if request.method=='POST':
         first_name=request.form['first_name']
@@ -172,7 +172,7 @@ def signup():
         session['user_email'] = new_user.email
         print('hello')
         flash('Account created successfully! Please login.', 'success')
-        return redirect(url_for('index'))
+        return redirect(url_for('login'))
     print ('no hello')
     return redirect(url_for('signup'))
 
@@ -343,7 +343,7 @@ def downvote(answer_id):
     answer = Answer.query.get_or_404(answer_id)
     user = User.query.get(session['user_id'])
 
-    # Check for an existing vote
+    # Check for 
     stmt = db.select(votes_association).where(
         votes_association.c.user_id == user.id,
         votes_association.c.answer_id == answer.id
