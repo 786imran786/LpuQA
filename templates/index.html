@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniQ - College Q&A Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{url_for ('static',filename='css/styles.css')}}">
+
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <a href="{{ url_for('index') }}" class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <span>UniQ</span>
+            </a>
+            
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-bar" placeholder="Search questions, answers, topics...">
+            </div>
+            
+            <div class="nav-icons">
+                <a href="{{url_for('ask')}}" class="nav-icon" id="ask-btn">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Ask</span>
+                </a>
+                <div class="nav-icon" id="notifications-btn">
+                    <i class="fas fa-bell"></i>
+                    <span>Notif</span>
+                    
+                </div>
+                <div class="theme-toggle" id="theme-toggle">
+                    <i class="fas fa-moon toggle-icon" id="theme-icon"></i>
+                    <span class="toggle-text">Dark Mode</span>
+                </div>
+                <a href="{{url_for('profile')}}" class="user-avatar" id="profile-btn">
+                    {% if user.image %}
+  <img src="{{ url_for('static', filename='uploads/' + user.image) }}" alt="Avatar">
+{% else %}
+  <img src="https://api.dicebear.com/6.x/avataaars/svg?seed={{ user.username }}" alt="Default Avatar">
+{% endif %}
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu">
+        <div class="mobile-menu-header">
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <span>UniQ</span>
+            </div>
+            <button class="close-mobile-menu" id="close-mobile-menu">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <a href="{{ url_for('index') }}" class="menu-item active-menu">
+            <i class="fas fa-home"></i>
+            <span>Home Feed</span>
+        </a>
+        <a href="{{url_for('ask')}}" class="menu-item">
+            <i class="fas fa-question-circle"></i>
+            <span>Ask Question</span>
+        </a>
+        <a href="{{url_for('profile')}}" class="menu-item">
+            
+            <span>My Profile</span>
+        </a>
+      
+        
+        <div class="sidebar-card" style="margin-top: 1.5rem;">
+            <h3 class="sidebar-title">Top Departments</h3>
+            <div class="tag-list">
+                <div class="tag">Computer Science</div>
+                <div class="tag">Electrical Engineering</div>
+                <div class="tag">Mechanical</div>
+                <div class="tag">Business Admin</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Left Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">Menu</h3>
+                <a href="{{ url_for('index') }}" class="menu-item active-menu">
+                    <i class="fas fa-home"></i>
+                    <span>Home Feed</span>
+                </a>
+                <a href="{{url_for('ask')}}" class="menu-item">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Ask Question</span>
+                </a>
+                <a href="{{url_for('profile')}}" class="menu-item">
+                    <i class="fas fa-user"></i>
+                    <span>My Profile</span>
+                </a>
+
+            </div>
+            
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">Top Departments</h3>
+<div class="tag-list">
+    {% for dept in department_tags %}
+    <div class="tag">{{ dept }}</div>
+    {% endfor %}
+</div>
+            </div>
+            
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">Popular Tags</h3>
+<div class="tag-list">
+    {% for tag in top_tags %}
+    <div class="tag">#{{ tag }}</div>
+    {% endfor %}
+</div>
+            </div>
+        </div>
+        
+        <!-- Main Content Area -->
+
+        <div class="main-content">
+{% for question in questions %}
+            <!-- Question 1 -->
+            <div class="content-card slide-in">
+                <div class="card-header">
+                    <div class="user-info">
+                        {% if question.author.image %}
+  <img src="{{ url_for('static', filename='uploads/' + question.author.image) }}" alt="Avatar">
+{% else %}
+  <img src="https://api.dicebear.com/6.x/avataaars/svg?seed={{ question.author.username }}" alt="Default Avatar">
+{% endif %}
+                        <div class="user-details">
+                            <div class="user-name">{{ question.author.full_name }}</div>
+                            <div class="user-meta">{{question.author.department}} · {{question.author.year}} yr · {{ question.created_at|time_ago }}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h2 class="question-title">{{ question.title }}</h2>
+                
+                <div class="question-content">
+                    {{ question.description|truncate(200) }}
+                </div>
+                
+                <div class="question-footer">
+                    <div class="action-buttons">
+                        <button class="action-button">
+                            <i class="fas fa-comment"></i>
+                            <span>{{question.answers|length}} Answers</span>
+                        </button>
+                        <button class="action-button">
+                            <i class="fas fa-bookmark"></i>
+                            <span>Save</span>
+                        </button>
+                        <button class="action-button">
+                            <i class="fas fa-share"></i>
+                            <span>Share</span>
+                        </button>
+                        <button class="action-button">
+                            <i class="fas fa-flag"></i>
+                            <span>Report</span>
+                        </button>
+                    </div>
+                    
+
+                </div>
+                
+                <!-- Comments Section -->
+                 {% for answer in question.answers %}
+                <div class="comments-section">
+                    <div class="comment">
+                        <div class="comment-avatar">MJ</div>
+                        <div class="comment-content">
+                            <div class="comment-header">
+                                <div class="comment-author">{{ answer.author.username }}</div>
+                                <div class="comment-time">answered {{ answer.created_at.strftime('%b %d, %Y') }}
+                                </div>
+                            </div>
+
+<div style="display: flex; flex-direction: column; align-items: center; float: right; margin-left: 10px;">
+
+
+  <button 
+    class="upvote-btn" 
+    data-answer-id="{{ answer.id }}" 
+    onclick="handleVote('{{ answer.id }}', 'upvote')" 
+    style="border: none; background: none; color: rgb(0, 142, 43); cursor: pointer;">
+<h4> Upvote</h4>
+</button>
+
+<span class="vote-score" id="score-{{ answer.id }}">{{ answer.score }}</span>
+
+<button 
+    class="downvote-btn" 
+    data-answer-id="{{ answer.id }}" 
+    onclick="handleVote('{{ answer.id }}', 'downvote')"
+    style="border: none; background: none; color: rgb(157, 154, 154); cursor: pointer;">
+    <h5>Downvote</h5>
+</button>
+</div>
+
+
+                        
+                        
+                            <div class="comment-text">
+                                
+                              {{ answer.content }}
+                            </div>
+                            <div class="comment-actions">
+                               
+                                {% if answer.author.id == user.id %}
+                                
+                                <form method="POST" action="{{ url_for('delete_answer', answer_id=answer.id) }}" style="display: inline;">
+                                <button type="submit" class="comment-action" style="border: none; background: none; color: red; cursor: pointer;">
+                                         Delete
+                                        </button>
+                                            </form>
+  
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+<!--              -->
+            <!-- Answer Form -->
+            <div class="content-card slide-in" style="animation-delay: 0.2s;">
+                <h3 class="form-title">Your Answer</h3>
+                <form class="answer-form"  method="POST" action="{{ url_for('answer', question_id=question.id) }}">
+    
+                        <div class="rich-text-editor">
+                            <div class="editor-toolbar">
+                                <button class="tool-button" title="Bold"><i class="fas fa-bold"></i></button>
+                                <button class="tool-button" title="Italic"><i class="fas fa-italic"></i></button>
+                                <button class="tool-button" title="Underline"><i class="fas fa-underline"></i></button>
+                                <button class="tool-button" title="List"><i class="fas fa-list-ul"></i></button>
+                                <button class="tool-button" title="Numbered List"><i class="fas fa-list-ol"></i></button>
+                                <button class="tool-button" title="Link"><i class="fas fa-link"></i></button>
+                                <button class="tool-button" title="Image"><i class="fas fa-image"></i></button>
+                                <button class="tool-button" title="Code"><i class="fas fa-code"></i></button>
+                            </div>
+                            <div class="editor-content" id="editor" contenteditable="true"></div>
+                            <input type="hidden" name="content" id="hidden-content">  
+                        </div>
+                    <button type="submit" class="submit-button">Post Your Answer</button>
+                </form>
+            </div>
+             {% endfor %}
+        </div>
+
+        <!-- Right Sidebar -->
+        <div class="right-sidebar">
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">Your Profile</h3>
+                <div class="user-info" style="margin-bottom: 1.5rem;">
+                    {% if user.image %}
+  <img src="{{ url_for('static', filename='uploads/' + user.image) }}" alt="Avatar">
+{% else %}
+  <img src="https://api.dicebear.com/6.x/avataaars/svg?seed={{ user.username }}" alt="Default Avatar">
+{% endif %}
+                    <div class="user-details">
+                        <div class="user-name">{{ user.full_name }}</div>
+                        <div class="user-meta">{{user.department }} · {{user.year}} Year</div>
+                    </div>
+                </div>
+                <a href="edit-profile.html" class="action-button" style="width: 100%; justify-content: center;">
+                    <i class="fas fa-edit"></i>
+                    <span>Edit Profile</span>
+                </a>
+            </div>
+            
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">Notifications</h3>
+{% for note in notifications %}
+<div class="notification-item {% if not note.is_read %}unread{% endif %}">
+    <div class="user-info">
+        <img src="https://api.dicebear.com/6.x/avataaars/svg?seed={{ note.sender.username }}" alt="Avatar" width="36" height="36">
+        <div class="user-details">
+            <div class="user-name">{{ note.sender.full_name }} {{ note.message }}</div>
+            <div class="user-meta">{{ note.created_at|time_ago }}</div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+         clear notification
+            </div>
+            
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">Moderation Tools</h3>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-flag"></i>
+                    <span>Reported Content</span>
+                    <div class="notification-badge" style="position: static; margin-left: auto;">8</div>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-user-slash"></i>
+                    <span>User Reports</span>
+                    <div class="notification-badge" style="position: static; margin-left: auto;">3</div>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-ban"></i>
+                    <span>Banned Users</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Moderation Stats</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+<!-- place this after all your answers are rendered -->
+<script>
+    
+document.addEventListener("DOMContentLoaded", function () {
+    const editor = document.getElementById("editor");
+    const hiddenInput = document.getElementById("hidden-content");
+
+    // Toolbar buttons
+    document.querySelectorAll(".tool-button").forEach(button => {
+        button.addEventListener("click", function (e) {
+            e.preventDefault();
+            const command = this.title.toLowerCase();
+
+            if (command === "image") {
+                const url = prompt("Enter image URL");
+                if (url) {
+                    document.execCommand("insertImage", false, url);
+                }
+            } else if (command === "link") {
+                const url = prompt("Enter URL");
+                if (url) {
+                    document.execCommand("createLink", false, url);
+                }
+            } else if (command === "code") {
+                const code = prompt("Enter code snippet");
+                if (code) {
+                    document.execCommand("insertHTML", false, `<pre><code>${code}</code></pre>`);
+                }
+            } else {
+                document.execCommand(command);
+            }
+        });
+    });
+
+    // Form submission – capture HTML from contenteditable
+document.querySelector(".answer-form").addEventListener("submit", function () {
+        hiddenInput.value = editor.innerHTML;
+    });
+});
+    async function handleVote(answerId, voteType) {
+        // Find both buttons for this answer
+        const upvoteButton = document.querySelector(`.upvote-btn[data-answer-id='${answerId}']`);
+        const downvoteButton = document.querySelector(`.downvote-btn[data-answer-id='${answerId}']`);
+
+        // ✅ Disable both buttons to prevent double-clicks
+        upvoteButton.disabled = true;
+        downvoteButton.disabled = true;
+
+        try {
+            const response = await fetch(`/vote/${answerId}/${voteType}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // If you use Flask-WTF CSRF, you'll need a header for the token
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById(`score-${answerId}`).innerText = data.score;
+            } else {
+                console.error('Failed to vote');
+            }
+        } catch (error) {
+            console.error('Error during vote:', error);
+        } finally {
+            // ✅ Re-enable buttons after the request is complete
+            upvoteButton.disabled = false;
+            downvoteButton.disabled = false;
+        }
+    }
+    </script>
+
+</body>
+</html>

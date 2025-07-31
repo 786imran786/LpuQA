@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniQ - My Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link rel="stylesheet" href="{{url_for ('static',filename='css/styles.css')}}">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <a href="{{ url_for('index') }}" class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <span>UniQ</span>
+            </a>
+            
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-bar" placeholder="Search questions, answers, topics...">
+            </div>
+            
+            <div class="nav-icons">
+                <a href="{{url_for('ask')}}" class="nav-icon" id="ask-btn">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Ask</span>
+                </a>
+                <div class="nav-icon" id="notifications-btn">
+                    <i class="fas fa-bell"></i>
+                    <span>Notif</span>
+                    <div class="notification-badge">3</div>
+                </div>
+                <div class="theme-toggle" id="theme-toggle">
+                    <i class="fas fa-moon toggle-icon" id="theme-icon"></i>
+                    <span class="toggle-text">Dark Mode</span>
+                </div>
+                <a href="{{url_for('profile')}}" class="user-avatar" id="profile-btn">
+                {% if user.image %}
+                    <img src="{{ url_for('static', filename='uploads/' + user.profile_photo) }}" alt="Avatar">
+                {% else %}
+                    <img src="https://api.dicebear.com/6.x/avataaars/svg?seed={{ user.username }}" alt="Default Avatar">
+                {% endif %}
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu">
+        <div class="mobile-menu-header">
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <span>UniQ</span>
+            </div>
+            <button class="close-mobile-menu" id="close-mobile-menu">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <a href="{{url_for('index')}}" class="menu-item">
+            <i class="fas fa-home"></i>
+            <span>Home Feed</span>
+        </a>
+        <a href="{{url_for('ask')}}" class="menu-item">
+            <i class="fas fa-question-circle"></i>
+            <span>Ask Question</span>
+        </a>
+        <a href="{{url_for('profile')}}" class="menu-item active-menu">
+            <i class="fas fa-user"></i>
+            <span>My Profile</span>
+        </a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Left Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">Menu</h3>
+                <a href="{{url_for('index')}}" class="menu-item">
+                    <i class="fas fa-home"></i>
+                    <span>Home Feed</span>
+                </a>
+                <a href="{{url_for('ask')}}" class="menu-item">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Ask Question</span>
+                </a>
+                <a href="{{url_for('profile')}}" class="menu-item active-menu">
+                    <i class="fas fa-user"></i>
+                    <span>My Profile</span>
+                </a>
+            </div>
+            
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">Quick Links</h3>
+                <a href="{{url_for('update_profile')}}" class="menu-item">
+                    <i class="fas fa-edit"></i>
+                    <span>Edit Profile</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-bookmark"></i>
+                    <span>My Bookmarks</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-history"></i>
+                    <span>My Activity</span>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Profile Header -->
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    {% if user.image %}
+  <img src="{{ url_for('static', filename='uploads/' + user.image) }}" alt="Avatar">
+{% else %}
+  <img src="https://api.dicebear.com/6.x/avataaars/svg?seed={{ user.username }}" alt="Default Avatar">
+{% endif %}
+                </div>
+                <!-- <h1 class="profile-name">{{user.full_name}} <span class="role-badge admin-badge">Admin</span></h1> -->
+                 <h1 class="profile-name">{{user.full_name}}</h1>
+                <p><b>{{user.department}}</b></p>
+                
+                <div class="profile-meta">
+                    <div><i class="fas fa-map-marker-alt"></i>{{user.location}}</div>
+                    <div><i class="fas fa-envelope"></i> {{user.email}}</div>
+                    <div></div>
+                    <div><i class="fas fa-graduation-cap"></i> {{ user.year}} year</div>
+                </div>
+                
+                <div class="profile-stats">
+                    <div class="profile-stat">
+                        <div class="profile-stat-value">{{user.questions|length}}</div>
+                        <div class="profile-stat-label">Questions</div>
+                    </div>
+                    <div class="profile-stat">
+                        <div class="profile-stat-value">{{user.answers|length}}</div>
+                        <div class="profile-stat-label">Answers</div>
+                    </div>
+                    <div class="profile-stat">
+                        <div class="profile-stat-value">{{ total_upvotes }}</div>
+                        <div class="profile-stat-label">Upvotes</div>
+                    </div>
+                    <div class="profile-stat">
+                        <div class="profile-stat-value">{{accept_rate}}%</div>
+                        <div class="profile-stat-label">Accept Rate</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="profile-content">
+                <div class="profile-card">
+                    <h3 class="profile-card-title">Personal Information</h3>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Full Name:</div>
+                        <div class="info-value">{{user.full_name}}</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Email:</div>
+                        <div class="info-value">{{user.email}}</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">College ID:</div>
+                        <div class="info-value">{{user.c_id}}</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Department:</div>
+                        <div class="info-value">{{user.department}}</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Program:</div>
+                        <div class="info-value">B.Tech in Computer Science</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Year:</div>
+                        <div class="info-value">{{user.year}}</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Joined:</div>
+                        <div class="info-value">{{user.created_at}}</div>
+                    </div>
+                    
+                    <a href="{{url_for('update_profile')}}" class="edit-button">Edit Profile</a>
+                </div>
+                
+                <div class="profile-card">
+                    <h3 class="profile-card-title">About Me</h3>
+                    
+                    <div class="info-item" style="flex-direction: column;">
+                        <div class="info-label">Bio:</div>
+                        <div class="info-value" style="margin-top: 0.5rem; line-height: 1.7;">
+                            {%if user.bio%}
+                            {{user.bio}}
+                            {%else%}
+                            No bio available.
+                            {%endif%}
+                        </div>
+                   
+                    </div>
+                    
+                    <div class="info-item" style="flex-direction: column; margin-top: 1.5rem;">
+                        <div class="info-label">Interests:</div>
+                        <div class="tag-list" style="margin-top: 0.5rem;">
+                            {% if user.interest %}
+                                {% for interest in user.interest.split(',') %}
+                                <div class="tag">{{ interest.strip() }} </div>
+                                {% endfor %}
+                                {%endif%}
+                        </div>
+                    </div>
+                    
+                    <div class="info-item" style="flex-direction: column; margin-top: 1.5rem;">
+                        <div class="info-label">Skills:</div>
+                        <div class="tag-list" style="margin-top: 0.5rem;">
+                                {% if user.skiils %}
+                                {% for i in user.skiils.split(',') %}
+                                <div class="tag">{{ i.strip() }} </div>
+                                {% endfor %}
+                                {%endif%}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Activity -->
+            <!-- <div class="content-card">
+                <h3 class="profile-card-title">Recent Activity</h3>
+                
+                <div class="comment">
+                    <div class="comment-avatar">JA</div>
+                    <div class="comment-content">
+                        <div class="comment-header">
+                            <div class="comment-author">You answered a question</div>
+                            <div class="comment-time">2 hours ago</div>
+                        </div>
+                        <div class="comment-text">
+                            "For Dijkstra's algorithm, using heapq is generally efficient and straightforward..."
+                        </div>
+                        <div class="comment-actions">
+                            <span class="comment-action">View Question</span>
+                            <span class="comment-action">12 Upvotes</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="comment">
+                    <div class="comment-avatar">JA</div>
+                    <div class="comment-content">
+                        <div class="comment-header">
+                            <div class="comment-author">You asked a question</div>
+                            <div class="comment-time">1 day ago</div>
+                        </div>
+                        <div class="comment-text">
+                            "What's the best way to implement a binary search tree in Python with OOP principles?"
+                        </div>
+                        <div class="comment-actions">
+                            <span class="comment-action">View Question</span>
+                            <span class="comment-action">8 Answers</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="action-button" style="width: 100%; justify-content: center; margin-top: 1rem;">
+                    <span>View All Activity</span>
+                </button>
+            </div> -->
+        </div>
+        
+        <!-- Right Sidebar -->
+        <div class="right-sidebar">
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">Achievements</h3>
+                <div class="tag-list">
+                    {% if user.achievement %}
+                    {% for achievement in user.achievement.split(',') %}
+                    <div class="tag" style="background-color: #e3f2fd; color: #1565c0;">
+                        <i class="fas fa-star"></i> {{ achievement.strip() }}
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    No Achievements yet
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">My Courses</h3>
+                <div class="tag-list">
+                    {% if user.course %}
+                    {% for course in user.course.split(',') %}
+                    <div class="tag">{{course.strip()}}</div>
+                    {%endfor%}
+                    {% else %}
+                    No Courses yet
+                    {% endif %}
+                   
+                </div>
+            </div>
+            
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">Account Settings</h3>
+                <a href="{{url_for('update_profile')}}" class="menu-item">
+                    <i class="fas fa-user-edit"></i>
+                    <span>Edit Profile</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-lock"></i>
+                    <span>Change Password</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-bell"></i>
+                    <span>Notification Settings</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+        <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+</body>
+</html>

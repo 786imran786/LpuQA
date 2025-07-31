@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniQ - Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <span>UniQ</span>
+            </a>
+            
+            <div class="nav-icons">
+                <div class="theme-toggle" id="theme-toggle">
+                    <i class="fas fa-moon toggle-icon" id="theme-icon"></i>
+                    <span class="toggle-text">Dark Mode</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Login Modal -->
+    <div class="modal-overlay active" id="login-modal">
+        <div class="modal">
+            <div class="form-tabs">
+                <button class="tab-button active" id="login-tab">Login</button>
+                <button class="tab-button" id="signup-tab">Sign Up</button>
+            </div>
+            
+            <div class="modal-header">
+                <h2 class="modal-title">Welcome to UniQ</h2>
+                <button class="close-modal" id="close-login">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Login Form -->
+                <form id="login-form" method="POST" action="{{ url_for('login') }}">
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input" name="email" placeholder="your.email@university.edu" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-input" name="password" placeholder="Enter your password" required>
+                    </div>
+                    <button type="submit" class="submit-button" style="width: 100%;">Sign In</button>
+                    
+                    <div class="login-options">
+                        <button type="button" class="login-button google">
+                            <i class="fab fa-google"></i>
+                            <span>Sign in with Google</span>
+                        </button>
+                        <button type="button" class="login-button college">
+                            <i class="fas fa-id-card"></i>
+                            <span>Sign in with College ID</span>
+                        </button>
+                    </div>
+                </form>
+                
+                <!-- Signup Form -->
+                <form id="signup-form" method="POST" action="{{ url_for('signup') }}" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label">First Name</label>
+                        <input type="text" class="form-input" name="first_name" placeholder="Md Imran Siddiqui" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" class="form-input" name="last_name" placeholder="Md Imran Siddiqui" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Username</label>
+                        <input type="text" class="form-input" name="username" placeholder="imran1815" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input" name="email" placeholder="your.email@university.edu" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">College ID</label>
+                        <input type="text" class="form-input" name="college_id" placeholder="Enter your college ID" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Role</label>
+                        <select class="form-input" name="role" required>
+                            <option value="">Student</option>
+                            <option value="cs">Faculty</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Department</label>
+                        <select class="form-input" name="department" required>
+                            <option value="">Select Department</option>
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="Electrical Engineering">Electrical Engineering</option>
+                            <option value="Mechanical Engineering">Mechanical Engineering</option>
+                            <option value="Mathematics">Mathematics</option>
+                            <option value="Biology">Biology</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Year</label>
+                        <select class="form-input" name="year" required>
+                            <option value="">Select Year</option>
+                            <option value="1st">First Year</option>
+                            <option value="2nd">Second Year</option>
+                            <option value="3rd">Third Year</option>
+                            <option value="4th">Fourth Year</option>
+                            <option value="Graduate">Graduate Student</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-input" name="password" placeholder="Create a password" required>
+                    </div>
+                    <button type="submit" class="submit-button" style="width: 100%;">Create Account</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <p id="toggle-form-text">Don't have an account? <a href="#" id="toggle-form">Sign Up</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+</body>
+</html>

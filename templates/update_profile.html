@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniQ - Edit Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+       <link rel="stylesheet" href="{{url_for ('static',filename='css/styles.css')}}">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <a href="{{url_for('index')}}" class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <span>UniQ</span>
+            </a>
+            
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-bar" placeholder="Search questions, answers, topics...">
+            </div>
+            
+            <div class="nav-icons">
+                <a href="ask.html" class="nav-icon" id="ask-btn">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Ask</span>
+                </a>
+                <div class="nav-icon" id="notifications-btn">
+                    <i class="fas fa-bell"></i>
+                    <span>Notif</span>
+                    <div class="notification-badge">3</div>
+                </div>
+                <div class="theme-toggle" id="theme-toggle">
+                    <i class="fas fa-moon toggle-icon" id="theme-icon"></i>
+                    <span class="toggle-text">Dark Mode</span>
+                </div>
+                <a href="profile.html" class="user-avatar" id="profile-btn">
+                    {% if user.image %}
+  <img src="{{ url_for('static', filename='uploads/' + user.image) }}" alt="Avatar">
+{% else %}
+  <img src="https://api.dicebear.com/6.x/avataaars/svg?seed={{ user.username }}" alt="Default Avatar">
+{% endif %} </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu">
+        <div class="mobile-menu-header">
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <span>UniQ</span>
+            </div>
+            <button class="close-mobile-menu" id="close-mobile-menu">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <a href="{{url_for('index')}}" class="menu-item">
+            <i class="fas fa-home"></i>
+            <span>Home Feed</span>
+        </a>
+        <a href="{{url_for('ask')}}" class="menu-item">
+            <i class="fas fa-question-circle"></i>
+            <span>Ask Question</span>
+        </a>
+        <a href="{{url_for('profile')}}" class="menu-item">
+            <i class="fas fa-user"></i>
+            <span>My Profile</span>
+        </a>
+        <a href="{{url_for('update_profile')}}" class="menu-item active-menu">
+            <i class="fas fa-edit"></i>
+            <span>Edit Profile</span>
+        </a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Left Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">Menu</h3>
+                <a href="{{url_for('index')}}" class="menu-item">
+                    <i class="fas fa-home"></i>
+                    <span>Home Feed</span>
+                </a>
+                <a href="{{url_for('ask')}}" class="menu-item">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Ask Question</span>
+                </a>
+                <a href="{{url_for('profile')}}" class="menu-item">
+                    <i class="fas fa-user"></i>
+                    <span>My Profile</span>
+                </a>
+                <a href="{{url_for('update_profile')}}" class="menu-item active-menu">
+                    <i class="fas fa-edit"></i>
+                    <span>Edit Profile</span>
+                </a>
+            </div>
+            
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">Profile Settings</h3>
+                <a href="#personal-info" class="menu-item">
+                    <i class="fas fa-user"></i>
+                    <span>Personal Info</span>
+                </a>
+                <a href="#about-me" class="menu-item">
+                    <i class="fas fa-info-circle"></i>
+                    <span>About Me</span>
+                </a>
+                <a href="#privacy" class="menu-item">
+                    <i class="fas fa-lock"></i>
+                    <span>Privacy</span>
+                </a>
+                <a href="#danger-zone" class="menu-item">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>Danger Zone</span>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <div class="content-card">
+                <h2 class="form-title">Edit Profile</h2>
+                <form class="edit-profile-container"  method="POST" action="{{url_for('update')}}" enctype="multipart/form-data">
+                    <div class="avatar-upload">
+                        <div class="avatar-preview">
+                           {% if user.image %}
+  <img src="{{ url_for('static', filename='uploads/' + user.image) }}" alt="Avatar">
+{% else %}
+  <img src="https://api.dicebear.com/6.x/avataaars/svg?seed={{ user.username }}" alt="Default Avatar">
+{% endif %}  </div>
+                        <label for="avatar-upload" class="upload-button">
+                            <i class="fas fa-camera"></i> Change Photo
+                        </label>
+                        <input type="file" id="avatar-upload" name="avatar" accept="image/*" style="display: none;">
+                    </div>
+                    
+                    <div class="ask-form">
+                        <div class="form-row">
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label class="form-label">First Name</label>
+                                    <input type="text" class="form-input" name="first_name" value="{{user.first_name}}" required>
+                                </div>
+                            </div>
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label class="form-label">Last Name</label>
+                                    <input type="text" class="form-input" name="last_name" value="{{user.last_name}}" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+
+                        
+                        <div class="form-row">
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label class="form-label">Department</label>
+                                    <select class="form-input" name="department" required>
+                                        <option value="Computer Science">Computer Science</option>
+                                        <option value="Electrical Engineering">Electrical Engineering</option>
+                                        <option value="Mechanical Engineering">Mechanical Engineering</option>
+                                        <option value="mMathematics">Mathematics</option>
+                                        <option value="Biology">Biology</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label class="form-label">Year</label>
+                                    <select class="form-input" name="year" required>
+                                        <option value="1">First Year</option>
+                                        <option value="2" selected>Second Year</option>
+                                        <option value="3">Third Year</option>
+                                        <option value="4">Fourth Year</option>
+                                        <option value="5">Graduate Student</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Bio</label>
+                            <div class="rich-text-editor">
+                                <div class="editor-toolbar">
+                                    <button class="tool-button" title="Bold"><i class="fas fa-bold"></i></button>
+                                    <button class="tool-button" title="Italic"><i class="fas fa-italic"></i></button>
+                                    <button class="tool-button" title="Link"><i class="fas fa-link"></i></button>
+                                </div>
+                                <textarea class="editor-content" name="bio" required>{{user.bio}}</textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Interests</label>
+                            <input type="text" class="form-input" name="interests_input" value="{{user.interest}}">
+                            <input type="hidden" id="interests-hidden" name="interests">
+                            <div class="tag-preview" id="interests-preview" style="margin-top: 0.5rem;">
+                                {% if user.interest %}
+                                {% for interest in user.interest.split(',') %}
+                                <div class="tag">{{ interest.strip() }} </div>
+                                {% endfor %}
+                                {%endif%}
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Skills</label>
+                            <input type="text" class="form-input" name="skills_input" value="{{user.skiils}}">
+                            <input type="hidden" id="skills-hidden" name="skills">
+                            <div class="tag-preview" id="skills-preview" style="margin-top: 0.5rem;">
+                                {% if user.skiils %}
+                                 {% for skill in user.skiils.split(',') %}
+                                <div class="tag">{{ skill.strip() }} </div>
+                                {% endfor %}
+                                {%endif%}
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Location</label>
+                            <input type="text" class="form-input" name="location" value="{{user.location}}">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Courses</label>
+                            <input type="text" class="form-input" name="course" value="{{user.course}}">
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="button" class="cancel-button" >Cancel</button>
+                            <button type="submit" class="submit-button">Save Changes</button>
+                        </div>
+                        </form>
+                        
+                        <div class="delete-account">
+                            <h3>Account Options</h3>
+                            <button type="button" class="delete-button">
+                                <i class="fas fa-exclamation-triangle"></i> Delete Account
+                            </button>
+                        </div>
+                    </div>
+                
+            </div>
+        </div>
+        
+        <!-- Right Sidebar -->
+        <div class="right-sidebar">
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">Profile Preview</h3>
+                <div class="user-info" style="margin-bottom: 1.5rem;">
+                    {% if user.image %}
+  <img src="{{ url_for('static', filename='uploads/' + user.image) }}" alt="Avatar">
+{% else %}
+  <img src="https://api.dicebear.com/6.x/avataaars/svg?seed={{ user.username }}" alt="Default Avatar">
+{% endif %}
+                    <div class="user-details">
+                        <div class="user-name">{{user.fullname}}</div>
+                        <div class="user-meta">{{user.department}} · {{user.year}}nd Year</div>
+                    </div>
+                </div>
+                <div class="question-content" style="font-size: 0.9rem;">
+                    {%if user.bio %}
+                    <p>{{user.bio[0:50]}}...</p>
+                    {%else%}
+                    <p>No bio available</p>
+                    {%endif%}
+                </div>
+            </div>
+            
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">Profile Completion</h3>
+                <div class="stat-item">
+                    <div class="stat-value">85%</div>
+                    <div class="stat-label">Complete</div>
+                </div>
+                <div class="question-content" style="font-size: 0.9rem; margin-top: 1rem;">
+                    <p><strong>To improve your profile:</strong></p>
+                    <ul style="padding-left: 1.2rem; margin-top: 0.5rem;">
+                        <li>Add more skills</li>
+                        <li>Upload a profile cover</li>
+                        <li>Connect your social accounts</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+     <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+</body>
+</html>     
