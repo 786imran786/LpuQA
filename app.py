@@ -94,6 +94,7 @@ class Answer(db.Model):
         total_upvotes = db.session.query(votes_association).filter_by(answer_id=self.id, vote_type='upvote').count()
         total_downvotes = db.session.query(votes_association).filter_by(answer_id=self.id, vote_type='downvote').count()
         return total_upvotes - total_downvotes
+
 class Notification(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     recipient_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
