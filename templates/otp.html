@@ -11,11 +11,14 @@
     <!-- Header -->
     <header>
         <div class="header-container">
-            <a href="index.html" class="logo">
-                <i class="fas fa-graduation-cap"></i>
-                <span>UniQ</span>
+           <a href="{{ url_for('index') }}" class="logo">
+<img src="{{ url_for('static', filename='uploads/logo.png') }}" 
+     alt="Logo" 
+     style="height: 50px; width: auto; max-width: 100%; object-fit: contain;">
+     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600&display=swap" rel="stylesheet">
+<span class="logo-text">AskLpu</span>
+
             </a>
-            
             <div class="nav-icons">
                 <div class="theme-toggle" id="theme-toggle">
                     <i class="fas fa-moon toggle-icon" id="theme-icon"></i>

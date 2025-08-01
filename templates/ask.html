@@ -15,9 +15,13 @@
                 <i class="fas fa-bars"></i>
             </button>
             
-            <a href="{{ url_for('index') }}" class="logo">
-                <i class="fas fa-graduation-cap"></i>
-                <span>UniQ</span>
+           <a href="{{ url_for('index') }}" class="logo">
+<img src="{{ url_for('static', filename='uploads/logo.png') }}" 
+     alt="Logo" 
+     style="height: 50px; width: auto; max-width: 100%; object-fit: contain;">
+     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600&display=swap" rel="stylesheet">
+<span class="logo-text">AskLpu</span>
+
             </a>
 
             <div class="nav-icons">
@@ -48,10 +52,14 @@
     <!-- Mobile Menu -->
     <div class="mobile-menu" id="mobile-menu">
         <div class="mobile-menu-header">
-            <div class="logo">
-                <i class="fas fa-graduation-cap"></i>
-                <span>UniQ</span>
-            </div>
+           <a href="{{ url_for('index') }}" class="logo">
+<img src="{{ url_for('static', filename='uploads/logo.png') }}" 
+     alt="Logo" 
+     style="height: 50px; width: auto; max-width: 100%; object-fit: contain;">
+     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600&display=swap" rel="stylesheet">
+<span class="logo-text">AskLpu</span>
+
+            </a>
             <button class="close-mobile-menu" id="close-mobile-menu">
                 <i class="fas fa-times"></i>
             </button>
@@ -70,6 +78,13 @@
             <span>My Profile</span>
         </a>
     </div>
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }} mt-2">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
 
     <!-- Main Content -->
     <div class="main-container">

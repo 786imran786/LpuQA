@@ -27,7 +27,7 @@
 
     <div class="search-container">
         <i class="fas fa-search search-icon"></i>
-        <form method="GET" action="{{ url_for('search') }}"></form>
+        <form method="GET" action="{{ url_for('search') }}">
         <input type="text" class="search-bar" name="query" placeholder="Search questions, answers, topics...">
     </form>
     </div>
@@ -107,6 +107,13 @@
             </div>
         </div>
     </div>
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }} mt-2">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
 
     <!-- Main Content -->
     <div class="main-container">

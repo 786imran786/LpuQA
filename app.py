@@ -1,4 +1,4 @@
-from flask import Flask,render_template,url_for,request,flash,redirect,session,jsonify
+from flask import Flask,render_template,url_for,request,flash,redirect,session,jsonify,current_app
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
@@ -8,6 +8,9 @@ from datetime import datetime
 from collections import Counter
 from flask_mail import Mail, Message
 import random
+from dotenv import load_dotenv
+import requests
+import json
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '0658145f863644a6143bdb370000274e'
@@ -22,7 +25,8 @@ app.config['MAIL_PASSWORD'] = 'tucq oonl xbyu riqx'
 mail = Mail(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
-
+# load_dotenv()
+# app.config['API_KEY'] = os.getenv('API_KEY')
 #models
 votes_association = db.Table('votes_association',
     db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
@@ -102,8 +106,41 @@ class Notification(db.Model):
 
     recipient = db.relationship('User', foreign_keys=[recipient_id], backref='received_notifications')
     sender = db.relationship('User', foreign_keys=[sender_id], backref='sent_notifications')
+#moderation
+load_dotenv()
 
-   
+def is_question_safe(question):
+    url = f"https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze?key={os.getenv('api_key')}"
+
+    data = {
+        "comment": {"text": question},
+        "languages": ["en", "hi"], 
+        "requestedAttributes": {
+            "TOXICITY": {},
+            "INSULT": {},
+            "PROFANITY": {},
+            "THREAT": {}
+        }
+    }
+
+    headers = {"Content-Type": "application/json"}
+    response = requests.post(url, headers=headers, data=json.dumps(data))
+
+    if response.status_code != 200:
+        print("❌ Error:", response.json())
+        return False
+
+    scores = response.json()["attributeScores"]
+
+    toxicity = scores["TOXICITY"]["summaryScore"]["value"]
+    insult = scores["INSULT"]["summaryScore"]["value"]
+    profanity = scores["PROFANITY"]["summaryScore"]["value"]
+    threat = scores["THREAT"]["summaryScore"]["value"]
+    if toxicity > 0.5 or insult > 0.7 or profanity > 0.6 or threat > 0.5:
+        return False
+    else:
+        return True
+    
 @app.template_filter('time_ago')
 def time_ago(date):
     now = datetime.utcnow()
@@ -310,28 +347,36 @@ def ask():
     user = User.query.get(session['user_id'])
     return render_template('ask.html',user=user)    
 
-@app.route('/askques',methods=['POST','GET'])
+@app.route('/askques', methods=['GET', 'POST'])
 def askques():
     if 'user_id' not in session:
         return redirect(url_for('login'))
-    if request.method=='POST':
+
+    if request.method == 'POST':
         title = request.form.get('title', '').strip()
         description = request.form.get('description', '').strip()
         tags = request.form.get('tags', '').strip()
-        department = request.form.get('department', '').strip()   
-        subject=request.form.get('subject', '').strip()
-
-        new_question=Question(
+        department = request.form.get('department', '').strip()
+        subject = request.form.get('subject', '').strip()
+        final = title +" " + description +" "+ tags
+        if is_question_safe(final)==False:
+            flash("You have asked an inappropriate question!", "danger")
+            return redirect(url_for('ask'))  # Reload the same form with message
+        else:
+            new_question = Question(
             title=title,
             description=description,
             tags=tags,
             department=department,
             subject=subject,
-            user_id=session['user_id']       
-        )
-        db.session.add(new_question)
-        db.session.commit()
-    return redirect(url_for('index')) 
+            user_id=session['user_id']
+            )
+            db.session.add(new_question)
+            db.session.commit()
+            flash("Question posted successfully!", "success")
+            return redirect(url_for('index'))
+    return render_template('ask.html')
+
 #answer
 @app.route('/answer/<int:question_id>',methods=['POST','GET'])
 def answer(question_id):
