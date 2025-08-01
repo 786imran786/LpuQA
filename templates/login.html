@@ -52,7 +52,7 @@
                     </div>
                     <button type="submit" class="submit-button" style="width: 100%;">Sign In</button>
                     
-                    <div class="login-options">
+                    <!-- <div class="login-options">
                         <button type="button" class="login-button google">
                             <i class="fab fa-google"></i>
                             <span>Sign in with Google</span>
@@ -61,37 +61,30 @@
                             <i class="fas fa-id-card"></i>
                             <span>Sign in with College ID</span>
                         </button>
-                    </div>
+                    </div> -->
                 </form>
                 
                 <!-- Signup Form -->
                 <form id="signup-form" method="POST" action="{{ url_for('signup') }}" style="display: none;">
                     <div class="form-group">
                         <label class="form-label">First Name</label>
-                        <input type="text" class="form-input" name="first_name" placeholder="Md Imran Siddiqui" required>
+                        <input type="text" class="form-input" name="first_name" placeholder="Peter" required>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Last Name</label>
-                        <input type="text" class="form-input" name="last_name" placeholder="Md Imran Siddiqui" required>
+                        <input type="text" class="form-input" name="last_name" placeholder="Parker" required>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Username</label>
-                        <input type="text" class="form-input" name="username" placeholder="imran1815" required>
+                        <input type="text" class="form-input" name="username" placeholder="pepark15" required>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Email</label>
                         <input type="email" class="form-input" name="email" placeholder="your.email@university.edu" required>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">College ID</label>
+                        <label class="form-label">College ID(Optional)</label>
                         <input type="text" class="form-input" name="college_id" placeholder="Enter your college ID" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Role</label>
-                        <select class="form-input" name="role" required>
-                            <option value="">Student</option>
-                            <option value="cs">Faculty</option>
-                        </select>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Department</label>

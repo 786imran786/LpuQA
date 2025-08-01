@@ -26,7 +26,7 @@
             </div>
             
             <div class="nav-icons">
-                <a href="ask.html" class="nav-icon" id="ask-btn">
+                <a href="{{url_for('ask')}}" class="nav-icon" id="ask-btn">
                     <i class="fas fa-plus-circle"></i>
                     <span>Ask</span>
                 </a>
@@ -242,9 +242,12 @@
                         
                         <div class="delete-account">
                             <h3>Account Options</h3>
+                            
                             <button type="button" class="delete-button">
-                                <i class="fas fa-exclamation-triangle"></i> Delete Account
+                                <i class="fas fa-exclamation-triangle"></i> 
+                                <a href="{{url_for('delete')}}">Delete Account</a>
                             </button>
+                            
                         </div>
                     </div>
                 

@@ -276,6 +276,15 @@ header {
     width: 300px;
     flex-shrink: 0;
 }
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+
+.logo-text {
+font-family: 'Dancing Script', cursive;
+  font-size: 26px;
+  font-weight: 600;
+  color: #F7941D;
+  letter-spacing: 1px;
+}
 
 .content-card {
     background: var(--card-bg);
@@ -287,7 +296,7 @@ header {
     height: auto; 
     overflow-wrap: break-word;
     overflow: hidden; 
-    
+
 }
 
 .content-card:hover {

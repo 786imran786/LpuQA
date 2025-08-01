@@ -6,14 +6,23 @@ from flask_migrate import Migrate
 from sqlalchemy import func,desc
 from datetime import datetime
 from collections import Counter
+from flask_mail import Mail, Message
+import random
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '0658145f863644a6143bdb370000274e'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['WTF_CSRF_ENABLED'] = True
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'n7033752@gmail.com'  # your email
+app.config['MAIL_PASSWORD'] = 'tucq oonl xbyu riqx' 
+mail = Mail(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+
 #models
 votes_association = db.Table('votes_association',
     db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
@@ -30,7 +39,7 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)#use
     c_id = db.Column(db.String(200), nullable=False)#use
     password = db.Column(db.String(200), nullable=False)#use
-    role = db.Column(db.String(20), default='student')#use
+    role = db.Column(db.String(20), default='student',nullable=True)#use
     department = db.Column(db.String(50), nullable=True)#use
     year = db.Column(db.String(90), nullable=True)#use
     questions = db.relationship('Question', backref='author', lazy=True)
@@ -45,6 +54,7 @@ class User(db.Model):
     otp=db.Column(db.Integer)#use
     achievement=db.Column(db.String(200), nullable=True)
     course=db.Column(db.String(200), nullable=True)
+    verify= db.Column(db.Boolean, default=False)
     voted_on = db.relationship(
         'Answer', 
         secondary=votes_association, 
@@ -145,7 +155,6 @@ def signup():
         c_id=request.form['college_id']
         password=request.form['password']
         hashed_password = generate_password_hash(password)
-        role=request.form['role']
         department=request.form['department']
         year=request.form['year']
         if User.query.filter_by(email=email).first():
@@ -162,7 +171,6 @@ def signup():
             email=email,
             c_id=c_id,
             password=password,
-            role=role,
             department=department,
             year=year
         )
@@ -172,9 +180,51 @@ def signup():
         session['user_email'] = new_user.email
         print('hello')
         flash('Account created successfully! Please login.', 'success')
-        return redirect(url_for('login'))
-    print ('no hello')
-    return redirect(url_for('signup'))
+        return redirect(url_for('otp_gene'))
+    return render_template('login.html')
+@app.route('/otp_gene')
+def otp_gene():
+    x = session.get('user_id')
+    user_email = session.get('user_email')  
+    if not user_email:
+        flash("Session expired. Please sign up again.", "warning")
+        return redirect(url_for('signup'))
+    user_emails =user_email
+    subject="Verification code"
+    otp=random.randint(100000, 999999)
+    user = User.query.get(x)
+    user.otp = otp
+    db.session.commit()
+    body="Your verification code is "+str(otp)
+    msg = Message(subject=subject, sender=app.config['MAIL_USERNAME'], recipients=[user_emails])
+    msg.body = body
+    try:
+        mail.send(msg)
+        flash('Mail sent successfully!', 'success')
+    except Exception as e:
+        flash(f'Something went wrong: {str(e)}', 'danger')
+    return render_template('otp.html')
+
+@app.route('/otp', methods=['POST', 'GET'])
+def otp():
+    if request.method == 'POST':
+        otp = request.form['otp']
+        x = session.get('user_id')
+        user = User.query.get(x)
+
+        if user and int(otp) == int(user.otp):
+            session['user_id'] = user.id
+            session['user_email'] = user.email
+            user.otp = None  # clear OTP after use
+            user.verify=True
+            db.session.commit()
+            flash("OTP verified successfully!", "success")
+            return redirect(url_for('index'))
+        else:
+            flash("Invalid OTP. Please try again.", "danger")
+            return redirect(url_for('otp'))
+    return render_template('otp.html')
+
 
 #login page
 @app.route('/login', methods=['GET', 'POST'])
@@ -187,8 +237,14 @@ def login():
         if user and user.password == password:
             session['user'] = email
             session['user_id'] = user.id
-            flash('Login successful!', 'success')
-            return redirect(url_for('index'))
+            if user.verify==True:
+                return redirect(url_for('index'))
+            else:
+                x = session.get('user_id')
+                user=user.query.get(x)
+                db.session.delete(user)
+                db.session.commit()
+                return redirect(url_for('signup'))
         else:
             flash('Invalid credentials!', 'danger')
     else:
@@ -197,10 +253,10 @@ def login():
 #index page
 @app.route('/index')
 def index():
-    if 'user' in session:
+    user_id = session.get('user_id')
+    if user_id:
         question = Question.query.order_by(desc(Question.created_at)).all()
         x = session.get('user_id')
-        
         user=User.query.get(x)
         notifications = Notification.query.filter_by(recipient_id=user.id).order_by(desc(Notification.created_at)).all()
         question_list = Question.query.order_by(desc(Question.created_at)).all()
@@ -218,7 +274,7 @@ def index():
                                notifications=notifications)
     else:
         flash('You need to login first', 'warning')
-        return redirect(url_for('home'))
+        return redirect(url_for('login'))
 #search
 @app.route('/search', methods=['GET'])
 def search():
@@ -483,7 +539,16 @@ def clear_notification():
         notification.is_read = True        
     db.session.commit()
     return redirect(url_for('index'))
+@app.route('/delete')
+def delete():
+    user = User.query.get(session['user_id'])
+    db.session.delete(user)
+    db.session.commit()
+    return redirect(url_for('login'))
 
+@app.route('/about_us')
+def about_us():
+    return render_template('about_us.html')
 
 @app.route('/logout')
 def logout():

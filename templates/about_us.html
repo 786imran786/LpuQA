@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - UniQ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+ <link rel="stylesheet" href="{{url_for ('static',filename='css/styles.css')}}">
+
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <a href="index.html" class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <span>UniQ</span>
+            </a>
+            
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-bar" placeholder="Search questions, answers, topics...">
+            </div>
+            
+            <div class="nav-icons">
+                <a href="ask.html" class="nav-icon">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Ask</span>
+                </a>
+                <div class="nav-icon" id="notifications-btn">
+                    <i class="fas fa-bell"></i>
+                    <span>Notif</span>
+                    <div class="notification-badge">3</div>
+                </div>
+                <div class="theme-toggle" id="theme-toggle">
+                    <i class="fas fa-moon toggle-icon" id="theme-icon"></i>
+                    <span class="toggle-text">Dark Mode</span>
+                </div>
+                <a href="profile.html" class="user-avatar">
+                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User Avatar">
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu">
+        <div class="mobile-menu-header">
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <span>UniQ</span>
+            </div>
+            <button class="close-mobile-menu" id="close-mobile-menu">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <a href="index.html" class="menu-item">
+            <i class="fas fa-home"></i>
+            <span>Home Feed</span>
+        </a>
+        <a href="ask.html" class="menu-item">
+            <i class="fas fa-question-circle"></i>
+            <span>Ask Question</span>
+        </a>
+        <a href="profile.html" class="menu-item">
+            <i class="fas fa-user"></i>
+            <span>My Profile</span>
+        </a>
+        <a href="about.html" class="menu-item active-menu">
+            <i class="fas fa-info-circle"></i>
+            <span>About Us</span>
+        </a>
+        <div class="menu-item">
+            <i class="fas fa-book"></i>
+            <span>My Courses</span>
+        </div>
+        <div class="menu-item">
+            <i class="fas fa-bookmark"></i>
+            <span>Bookmarks</span>
+        </div>
+        
+        <div class="sidebar-card" style="margin-top: 1.5rem;">
+            <h3 class="sidebar-title">Top Departments</h3>
+            <div class="tag-list">
+                <div class="tag">Computer Science</div>
+                <div class="tag">Electrical Engineering</div>
+                <div class="tag">Mechanical</div>
+                <div class="tag">Business Admin</div>
+                <div class="tag">Mathematics</div>
+                <div class="tag">Biology</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Left Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">Menu</h3>
+                <a href="index.html" class="menu-item">
+                    <i class="fas fa-home"></i>
+                    <span>Home Feed</span>
+                </a>
+                <a href="ask.html" class="menu-item">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Ask Question</span>
+                </a>
+                <a href="profile.html" class="menu-item">
+                    <i class="fas fa-user"></i>
+                    <span>My Profile</span>
+                </a>
+                <a href="about.html" class="menu-item active-menu">
+                    <i class="fas fa-info-circle"></i>
+                    <span>About Us</span>
+                </a>
+                
+            </div>
+            
+            
+        </div>
+        
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- About Us Section -->
+            <div class="content-card slide-in">
+                <h2 class="question-title">About UniQ</h2>
+                
+                <div class="question-content">
+                    <p>UniQ is a revolutionary Q&A platform designed exclusively for college students and faculty. Our mission is to create a vibrant academic community where knowledge is shared freely and collaboratively.</p>
+                    
+                    <h3 style="margin: 1.5rem 0 1rem; color: var(--primary);">Our Vision</h3>
+                    <p>We believe that every student deserves access to quality academic support. UniQ bridges the gap between students across different years, departments, and even institutions, creating a powerful network of shared knowledge.</p>
+                    
+                    <h3 style="margin: 1.5rem 0 1rem; color: var(--primary);">Platform Features</h3>
+                    <ul style="margin-left: 1.5rem; line-height: 1.7;">
+                        <li>Department-specific question boards</li>
+                        <li>Verified faculty responses</li>
+                        <li>Peer-to-peer learning environment</li>
+                        <li>Resource sharing and collaboration tools</li>
+                        <li>Academic integrity safeguards</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Founders Section -->
+            <div class="content-card slide-in" style="animation-delay: 0.1s;">
+                <h2 class="question-title">Meet The Creators</h2>
+                
+                <div class="founders-container" style="display: flex; flex-wrap: wrap; gap: 2rem; margin-top: 1.5rem;">
+                    <!-- Founder 1 -->
+                    <div class="founder-card" style="flex: 1; min-width: 300px; background: var(--card-bg); border-radius: 12px; padding: 1.5rem; box-shadow: var(--shadow);">
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                            <img src="imran.jpeg" alt="Founder 1" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover;">
+                            <div>
+                                <h3 style="color: var(--primary); margin-bottom: 0.2rem;">Imran Gandu</h3>
+                                <p style="color: var(--gray); font-size: 0.9rem;">Founder & CEO</p>
+                            </div>
+                        </div>
+                        <p style="line-height: 1.7; margin-bottom: 1rem;">Imran Siddiqui is the brains behind this platform, and many more. In conjunction with completing his B.tech, he works on multiple live projects constantly upgrading and maintaining them. Imran's interest lies in world on coding & stats and by employing this knowledge he aims to secure the top place in the pioneers of AI and ML. To look into his projects, do visit his github and Linkedin profile.</p>
+                        <div class="social-links" style="display: flex; gap: 1rem;">
+                            <a href="#" style="color: var(--primary);"><i class="fab fa-linkedin fa-lg"></i></a>
+                            <a href="#" style="color: var(--primary);"><i class="fab fa-github fa-lg"></i></a>
+                            <a href="#" style="color: var(--primary);"><i class="fas fa-envelope fa-lg"></i></a>
+                        </div>
+                    </div>
+                    
+                    <!-- Founder 2 -->
+                    <div class="founder-card" style="flex: 1; min-width: 300px; background: var(--card-bg); border-radius: 12px; padding: 1.5rem; box-shadow: var(--shadow);">
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                            <img src="Ayush.jpeg" alt="Founder 2" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover;">
+                            <div>
+                                <h3 style="color: var(--primary); margin-bottom: 0.2rem;">Ayush Kumar</h3>
+                                <p style="color: var(--gray); font-size: 0.9rem;">Co-Founder</p>
+                            </div>
+                        </div>
+                        <p style="line-height: 1.7; margin-bottom: 1rem;">Ayush is an ambitious Data Scientist, he has worked closely on a number of projects and handled a plethora of programmes. Ayush pursuing B.tech in CSE with a keen interest in mathematics. Having a combination of common name but niche skills, he can be easily found on Linkedin and github, programmings his days away</p>
+                        <div class="social-links" style="display: flex; gap: 1rem;">
+                            <a href="#" style="color: var(--primary);"><i class="fab fa-linkedin fa-lg"></i></a>
+                            <a href="#" style="color: var(--primary);"><i class="fab fa-github fa-lg"></i></a>
+                            <a href="#" style="color: var(--primary);"><i class="fas fa-envelope fa-lg"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Contact Us Section -->
+            <div class="content-card slide-in" style="animation-delay: 0.2s;">
+                <h2 class="question-title">Contact Us</h2>
+                
+                <div class="contact-container" style="display: flex; flex-wrap: wrap; gap: 2rem; margin-top: 1.5rem;">
+                    <div class="contact-info" style="flex: 1; min-width: 300px;">
+                        <h3 style="color: var(--primary); margin-bottom: 1rem;">Get In Touch</h3>
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                            <i class="fas fa-envelope" style="color: var(--accent);"></i>
+                            <span>support@uniq-platform.com</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                            <i class="fas fa-phone" style="color: var(--accent);"></i>
+                            <span>+1 (555) 123-4567</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                            <i class="fas fa-map-marker-alt" style="color: var(--accent);"></i>
+                            <span>123 University Ave, Palo Alto, CA 94301</span>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-form" style="flex: 1; min-width: 300px;">
+                        <form style="display: flex; flex-direction: column; gap: 1rem;">
+                            <div class="form-group">
+                                <input type="text" class="form-input" placeholder="Your Name" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="email" class="form-input" placeholder="Your Email" required>
+                            </div>
+                            <div class="form-group">
+                                <select class="form-input" required>
+                                    <option value="">Select Subject</option>
+                                    <option value="support">Technical Support</option>
+                                    <option value="feedback">Feedback</option>
+                                    <option value="partnership">Partnership</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <textarea class="form-input" style="min-height: 120px;" placeholder="Your Message" required></textarea>
+                            </div>
+                            <button type="submit" class="submit-button">Send Message</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            
+        </div>
+        
+        <!-- Right Sidebar -->
+        <div class="right-sidebar">
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">Your Profile</h3>
+                <div class="user-info" style="margin-bottom: 1.5rem;">
+                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User Avatar" style="width: 64px; height: 64px;">
+                    <div class="user-details">
+                        <div class="user-name">John Anderson <span class="role-badge admin-badge">Admin</span></div>
+                        <div class="user-meta">Computer Science · 2nd Year</div>
+                    </div>
+                </div>
+                <a href="profile.html" class="action-button" style="width: 100%; justify-content: center;">
+                    <i class="fas fa-edit"></i>
+                    <span>Edit Profile</span>
+                </a>
+            </div>
+            
+            
+            
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">Follow Us</h3>
+                <div class="social-links" style="display: flex; gap: 1rem; justify-content: center; margin-top: 1rem;">
+                    <a href="#" class="social-icon" style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: var(--primary); color: white;">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="social-icon" style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: var(--primary); color: white;">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" class="social-icon" style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: var(--primary); color: white;">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="#" class="social-icon" style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: var(--primary); color: white;">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+      <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+
+</body>
+</html>
