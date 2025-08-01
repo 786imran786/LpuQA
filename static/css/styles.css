@@ -284,6 +284,10 @@ header {
     padding: 1.8rem;
     margin-bottom: 1.5rem;
     transition: var(--transition);
+    height: auto; 
+    overflow-wrap: break-word;
+    overflow: hidden; 
+    
 }
 
 .content-card:hover {

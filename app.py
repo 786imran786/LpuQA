@@ -205,7 +205,6 @@ def index():
         notifications = Notification.query.filter_by(recipient_id=user.id).order_by(desc(Notification.created_at)).all()
         question_list = Question.query.order_by(desc(Question.created_at)).all()
         all_tags = []
-        print(notifications)
         for q in question_list:
             if q.tags:
                 tags = [tag.strip() for tag in q.tags.split(',') if tag.strip()]
@@ -220,7 +219,33 @@ def index():
     else:
         flash('You need to login first', 'warning')
         return redirect(url_for('home'))
+#search
+@app.route('/search', methods=['GET'])
+def search():
+    queryy = request.args.get('query', '').strip() # Get search query from URL parameters
+    print(queryy)
+    if queryy:
+        # Searching for questions and answers based on query (could be title, description, or tags)
+        questions = Question.query.filter(
+            (Question.title.ilike(f'%{queryy}%')) |
+            (Question.description.ilike(f'%{queryy}%')) |
+            (Question.tags.ilike(f'%{queryy}%'))
+        ).all()
+        
+        answers = Answer.query.filter(
+            Answer.content.ilike(f'%{queryy}%')
+        ).all()
+    else:
+        questions = []
+        answers = []
+    return render_template('search_results.html', questions=questions, answers=answers, query=queryy)
 
+
+@app.route('/question/<int:question_id>')
+def question_view(question_id):
+    question = Question.query.get_or_404(question_id)
+    answers = Answer.query.filter_by(question_id=question_id).all()
+    return render_template('question_view.html', question=question, answers=answers)
 #ask
 @app.route('/ask')
 def ask():
@@ -448,6 +473,17 @@ def update():
     db.session.merge(update)
     db.session.commit()
     return redirect(url_for('profile'))
+
+#clear notification
+@app.route('/clear_notification')
+def clear_notification():
+    user = User.query.get(session['user_id'])
+    unread_notifications = Notification.query.filter_by(recipient_id=user.id, is_read=False).all()
+    for notification in unread_notifications:
+        notification.is_read = True        
+    db.session.commit()
+    return redirect(url_for('index'))
+
 
 @app.route('/logout')
 def logout():

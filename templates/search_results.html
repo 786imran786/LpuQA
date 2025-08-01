@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniQ - College Q&A Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{url_for ('static',filename='css/styles.css')}}">
+   <link rel="stylesheet" href="{{url_for ('static',filename='css/styles.css')}}">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <a href="{{url_for('login')}}" class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <span>UniQ</span>
+            </a>
+<form method="GET" action="{{ url_for('search') }}">
+    <div class="search-container">
+        <i class="fas fa-search search-icon"></i>
+        <input type="text" class="search-bar" name="query" placeholder="Search questions, answers, topics...">
+    </div>
+</form>
+
+            
+            <div class="nav-icons">
+                <a href="{{url_for('login')}}" class="nav-icon" id="ask-btn">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Ask</span>
+                </a>
+                <div class="nav-icon" id="notifications-btn">
+                    <i class="fas fa-bell"></i>
+                    <span>Notif</span>
+                    <div class="notification-badge">3</div>
+                </div>
+                <div class="theme-toggle" id="theme-toggle">
+                    <i class="fas fa-moon toggle-icon" id="theme-icon"></i>
+                    <span class="toggle-text">Dark Mode</span>
+                </div>
+                <a href="{{url_for('login')}}" class="user-avatar" id="profile-btn">
+ 
+  <img src="https://api.dicebear.com/6.x/avataaars/svg?seed=default" alt="Avatar">
+
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu">
+        <div class="mobile-menu-header">
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <span>UniQ</span>
+            </div>
+            <button class="close-mobile-menu" id="close-mobile-menu">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <a href="{{ url_for('login') }}" class="menu-item active-menu">
+            <i class="fas fa-home"></i>
+            <span>Home Feed</span>
+        </a>
+        <a href="{{url_for('login')}}" class="menu-item">
+            <i class="fas fa-question-circle"></i>
+            <span>Ask Question</span>
+        </a>
+        <a href="{{url_for('login')}}" class="menu-item">
+            
+            <span>My Profile</span>
+        </a>
+        <a href="{{url_for('login')}}" class="menu-item">
+            <i class="fas fa-sign-in-alt"></i>
+            <span>Login</span>
+        </a>
+        
+        <div class="sidebar-card" style="margin-top: 1.5rem;">
+            <h3 class="sidebar-title">Top Departments</h3>
+            <div class="tag-list">
+                <div class="tag">Computer Science</div>
+                <div class="tag">Electrical Engineering</div>
+                <div class="tag">Mechanical</div>
+                <div class="tag">Business Admin</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Left Sidebar -->
+        <div class="sidebar">
+            
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">Menu</h3>
+                <a href="{{ url_for('login') }}" class="menu-item active-menu">
+                    <i class="fas fa-home"></i>
+                    <span>Home Feed</span>
+                </a>
+                <a href="{{url_for('login')}}" class="menu-item">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Ask Question</span>
+                </a>
+                <a href="{{url_for('login')}}" class="menu-item">
+                    <i class="fas fa-user"></i>
+                    <span>My Profile</span>
+                </a>
+                <a href="{{url_for('login')}}" class="menu-item">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Login</span>
+                </a>
+            </div>
+    
+
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">Top Departments</h3>
+<div class="tag-list">
+    {% for dept in department_tags %}
+    <div class="tag">{{ dept }}</div>
+    {% endfor %}
+</div>
+            </div>
+            
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">Popular Tags</h3>
+<div class="tag-list">
+    {% for tag in top_tags %}
+    <div class="tag">#{{ tag }}</div>
+    {% endfor %}
+</div>
+            </div>
+        </div>
+        <!-- Main Content Area -->
+
+            <div class="content-card slide-in">
+                <div class="card-header">
+                    
+<h2 class="question-title">Search Results for "{{ query }}"</h2>
+
+<ul>
+
+    {% for question in questions %}
+    <li>
+<a href="{{ url_for('question_view', question_id=question.id) }}">
+   <h2 class="question-title"> {{ question.title }}</h2>
+</a>
+        <div class="question-content"><p>{{ question.description }}</p></div>
+    </li>
+    {% endfor %}
+</ul>
+ 
+                </div>
+                </div>
+                
+                <!-- Comments Section -->
+
+<div style="display: flex; flex-direction: column; align-items: center; float: right; margin-left: 10px;">
+</div>
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+<!-- place this after all your answers are rendered -->
+<script>
+    
+document.addEventListener("DOMContentLoaded", function () {
+    const editor = document.getElementById("editor");
+    const hiddenInput = document.getElementById("hidden-content");
+
+    // Toolbar buttons
+    document.querySelectorAll(".tool-button").forEach(button => {
+        button.addEventListener("click", function (e) {
+            e.preventDefault();
+            const command = this.title.toLowerCase();
+
+            if (command === "image") {
+                const url = prompt("Enter image URL");
+                if (url) {
+                    document.execCommand("insertImage", false, url);
+                }
+            } else if (command === "link") {
+                const url = prompt("Enter URL");
+                if (url) {
+                    document.execCommand("createLink", false, url);
+                }
+            } else if (command === "code") {
+                const code = prompt("Enter code snippet");
+                if (code) {
+                    document.execCommand("insertHTML", false, `<pre><code>${code}</code></pre>`);
+                }
+            } else {
+                document.execCommand(command);
+            }
+        });
+    });
+
+    // Form submission – capture HTML from contenteditable
+document.querySelector(".answer-form").addEventListener("submit", function () {
+        hiddenInput.value = editor.innerHTML;
+    });
+});
+    async function handleVote(answerId, voteType) {
+        // Find both buttons for this answer
+        const upvoteButton = document.querySelector(`.upvote-btn[data-answer-id='${answerId}']`);
+        const downvoteButton = document.querySelector(`.downvote-btn[data-answer-id='${answerId}']`);
+
+        // ✅ Disable both buttons to prevent double-clicks
+        upvoteButton.disabled = true;
+        downvoteButton.disabled = true;
+
+        try {
+            const response = await fetch(`/vote/${answerId}/${voteType}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // If you use Flask-WTF CSRF, you'll need a header for the token
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById(`score-${answerId}`).innerText = data.score;
+            } else {
+                console.error('Failed to vote');
+            }
+        } catch (error) {
+            console.error('Error during vote:', error);
+        } finally {
+            // ✅ Re-enable buttons after the request is complete
+            upvoteButton.disabled = false;
+            downvoteButton.disabled = false;
+        }
+    }
+    </script>
+     <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+</body>
+</html>

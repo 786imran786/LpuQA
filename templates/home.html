@@ -21,11 +21,13 @@
                 <span>UniQ</span>
             </a>
             
-            <div class="search-container">
-                <i class="fas fa-search search-icon"></i>
-                <input type="text" class="search-bar" placeholder="Search questions, answers, topics...">
-            </div>
-            
+<form method="GET" action="{{ url_for('search') }}">
+    <div class="search-container">
+        <i class="fas fa-search search-icon"></i>
+        <input type="text" class="search-bar" name="query" placeholder="Search questions, answers, topics...">
+    </div>
+</form>
+
             <div class="nav-icons">
                 <a href="{{url_for('login')}}" class="nav-icon" id="ask-btn">
                     <i class="fas fa-plus-circle"></i>
@@ -185,7 +187,7 @@
                  {% for answer in question.answers %}
                 <div class="comments-section">
                     <div class="comment">
-                        <div class="comment-avatar">MJ</div>
+                        <div class="comment-avatar">{{ answer.author.first_name[0] }}{{ answer.author.last_name[0] }}</div>
                         <div class="comment-content">
                             <div class="comment-header">
                                 <div class="comment-author">{{ answer.author.username }}</div>
