@@ -52,6 +52,13 @@
                     <button type="submit" class="submit-button" style="width: 100%;">Sign In</button>
                     </div>
                 </form>
+                {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }} mt-2">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
                 <a href="{{url_for('otp_gene')}}">Resend otp</a>
                 <!-- Signup Form -->
             </div>

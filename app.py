@@ -46,14 +46,13 @@ class User(db.Model):
     role = db.Column(db.String(20), default='student',nullable=True)#use
     department = db.Column(db.String(50), nullable=True)#use
     year = db.Column(db.String(90), nullable=True)#use
-    questions = db.relationship('Question', backref='author', lazy=True)
     bio = db.Column(db.Text, nullable=True)#use
     interest= db.Column(db.String(200), nullable=True)
     skiils=db.Column(db.String(200), nullable=True)
     location=db.Column(db.String(200), nullable=True)
+    questions = db.relationship('Question', backref='author', lazy=True, cascade="all, delete")
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    questions = db.relationship('Question', backref='author', lazy=True)
-    answers = db.relationship('Answer', backref='author', lazy=True)
+    answers = db.relationship('Answer', backref='author', lazy=True, cascade="all, delete")
     image = db.Column(db.String(300), nullable=True)
     otp=db.Column(db.Integer)#use
     achievement=db.Column(db.String(200), nullable=True)
@@ -62,7 +61,8 @@ class User(db.Model):
     voted_on = db.relationship(
         'Answer', 
         secondary=votes_association, 
-        back_populates='voters'
+        back_populates='voters',
+        cascade="all, delete"
     )
 class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -74,8 +74,7 @@ class Question(db.Model):
     department = db.Column(db.String(50), nullable=True)
     subject = db.Column(db.String(50), nullable=True)
     image = db.Column(db.String(200), nullable=True)
-    answers = db.relationship('Answer', backref='question', lazy=True)
-
+    answers = db.relationship('Answer', backref='question', lazy=True, cascade="all, delete")
 class Answer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text, nullable=False)
@@ -86,7 +85,8 @@ class Answer(db.Model):
     voters = db.relationship(
         'User', 
         secondary=votes_association,
-        back_populates='voted_on'
+        back_populates='voted_on',
+        cascade="all, delete"
     )
     @property
     def score(self):
@@ -105,8 +105,8 @@ class Notification(db.Model):
     is_read = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    recipient = db.relationship('User', foreign_keys=[recipient_id], backref='received_notifications')
-    sender = db.relationship('User', foreign_keys=[sender_id], backref='sent_notifications')
+    recipient = db.relationship('User', foreign_keys=[recipient_id], backref='received_notifications',cascade="all, delete")
+    sender = db.relationship('User', foreign_keys=[sender_id], backref='sent_notifications',cascade="all, delete")
 #moderation
 load_dotenv()
 
@@ -500,7 +500,6 @@ def downvote(answer_id):
             vote_type='downvote'
         )
         db.session.execute(insert_stmt)
-    
     db.session.commit()
     return jsonify({'score': answer.score})
 
