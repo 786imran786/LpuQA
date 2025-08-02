@@ -64,6 +64,14 @@ class User(db.Model):
         back_populates='voters',
         cascade="all, delete"
     )
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.Text, nullable=False)
+    answer_id = db.Column(db.Integer, db.ForeignKey('answer.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    user = db.relationship('User', backref='comments', lazy=True)
+
 class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
@@ -81,7 +89,7 @@ class Answer(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     question_id = db.Column(db.Integer, db.ForeignKey('question.id'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    #comments = db.relationship('Comment', backref='answer', lazy=True)
+    comments = db.relationship('Comment', backref='answer', lazy=True,cascade="all, delete")
     voters = db.relationship(
         'User', 
         secondary=votes_association,
@@ -104,7 +112,6 @@ class Notification(db.Model):
     link = db.Column(db.String(255), nullable=True)  # Optional URL to redirect
     is_read = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
     recipient = db.relationship('User', foreign_keys=[recipient_id], backref='received_notifications',cascade="all, delete")
     sender = db.relationship('User', foreign_keys=[sender_id], backref='sent_notifications',cascade="all, delete")
 #moderation
@@ -602,7 +609,42 @@ def delete():
     db.session.delete(user)
     db.session.commit()
     return redirect(url_for('login'))
+@app.route('/comment', methods=['POST'])
+def comment():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
 
+    content = request.form.get('comm')
+    answer_id = request.form.get('answer_id')
+
+    if not content or not answer_id:
+        flash("Comment or answer reference missing!", "danger")
+        return redirect(url_for('index'))
+
+    new_comment = Comment(
+        content=content,
+        answer_id=int(answer_id),
+        user_id=session['user_id']
+    )
+    db.session.add(new_comment)
+    db.session.commit()
+
+    # Optional: Add notification
+    answer = Answer.query.get(answer_id)
+    if answer.user_id != session['user_id']:
+        notify = Notification(
+            recipient_id=answer.user_id,
+            sender_id=session['user_id'],
+            message='commented on your answer',
+            link=url_for('index') + f"?question_id={answer.question_id}"
+        )
+        db.session.add(notify)
+        db.session.commit()
+
+    flash("Comment posted successfully!", "success")
+    return redirect(url_for('', question_id=answer.question_id))
+
+    
 @app.route('/about_us')
 def about_us():
     return render_template('about_us.html')

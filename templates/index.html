@@ -275,7 +275,30 @@
                         </div>
                     </div>
                 </div>
+                <b>Comments</b>
+                {% for comment in answer.comments %}
+<div class="coment-box">
+  <div class="comment-text">
+    
+    <div class="comment-avatar">{{ answer.author.first_name[0] }}{{ answer.author.last_name[0] }}</div>
+    <div>     <p><strong>{{ comment.user.username }}</strong>: {{ comment.content }}</p></div>
+    <small>{{ comment.created_at|time_ago }}</small>
+    
+</div>
+
+  </div>
+  {% endfor %}
+<form action="{{url_for('comment')}}" method="POST">
+    <input type="hidden" name="answer_id" value="{{ answer.id }}">
+  <div class="textarea-container">
+    <textarea name="comm" class="styled-textarea" placeholder="Type your message..."></textarea>
+    <button type="submit" class="send-button">Send</button>
+  </div>
+</form>
+                <br>
+                <hr>
                 {% endfor %}
+             
             </div>
             
 <!--              -->
