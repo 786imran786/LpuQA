@@ -81,7 +81,15 @@
             <span>My Profile</span>
         </a>
     </div>
-
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-container">
+      {% for category, message in messages %}
+        <div class="custom-flash alert-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
     <!-- Main Content -->
     <div class="main-container">
         <!-- Left Sidebar -->

@@ -216,8 +216,6 @@ def signup():
         db.session.commit()
         session['user_id'] = new_user.id
         session['user_email'] = new_user.email
-        print('hello')
-        flash('Account created successfully! Please login.', 'success')
         return redirect(url_for('otp_gene'))
     return render_template('login.html')
 @app.route('/otp_gene')
@@ -245,6 +243,7 @@ def otp_gene():
 
 @app.route('/otp', methods=['POST', 'GET'])
 def otp():
+    flash('OTP sent', 'success')
     if request.method == 'POST':
         otp = request.form['otp']
         x = session.get('user_id')
@@ -256,7 +255,7 @@ def otp():
             user.otp = None  # clear OTP after use
             user.verify=True
             db.session.commit()
-            flash("OTP verified successfully!", "success")
+            flash ('Welcome to ask Lpu!', 'success')
             return redirect(url_for('index'))
         else:
             flash("Invalid OTP. Please try again.", "danger")
@@ -405,6 +404,7 @@ def answer(question_id):
         
             db.session.add(notify)
             db.session.commit()
+            flash("Answer posted successfully!", "success")
     return redirect(url_for('index',question_id=question_id))
 #notification
 # @app.route('/notifications')
@@ -418,6 +418,15 @@ def delete_answer(answer_id):
     answer=Answer.query.get(answer_id)
     db.session.delete(answer)
     db.session.commit()
+    flash("Answer deleted successfully!", "success")
+    return redirect(url_for('index'))
+
+@app.route('/delete/<int:question_id>')
+def delete_q(question_id):
+    question = Question.query.get(question_id)
+    db.session.delete(question)
+    db.session.commit()
+    flash("Question deleted successfully!", "success")
     return redirect(url_for('index'))
 
 @app.route('/vote/<int:answer_id>/upvote', methods=['POST'])
@@ -545,6 +554,7 @@ def update_bio():
 @app.route('/update_profile')
 def update_profile():
     user = User.query.get(session['user_id'])
+
     return render_template('update_profile.html',user=user)
 #log out page
 @app.route('/update',methods=['POST'])
@@ -573,6 +583,7 @@ def update():
     update.id=session['user_id']
     db.session.merge(update)
     db.session.commit()
+
     return redirect(url_for('profile'))
 
 #clear notification
@@ -581,12 +592,13 @@ def clear_notification():
     user = User.query.get(session['user_id'])
     unread_notifications = Notification.query.filter_by(recipient_id=user.id, is_read=False).all()
     for notification in unread_notifications:
-        notification.is_read = True        
+        notification.is_read = True
     db.session.commit()
     return redirect(url_for('index'))
 @app.route('/delete')
 def delete():
     user = User.query.get(session['user_id'])
+    Notification.query.filter((Notification.sender_id == user.id) | (Notification.recipient_id == user.id)).delete()
     db.session.delete(user)
     db.session.commit()
     return redirect(url_for('login'))

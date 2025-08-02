@@ -1,4 +1,5 @@
 // js/script.js
+
 document.addEventListener('DOMContentLoaded', function() {
     
     // Theme toggle functionality
@@ -165,4 +166,13 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.slide-in').forEach(card => {
         observer.observe(card);
     });
+        const flash = document.querySelector(".custom-flash");
+    if (flash) {
+      setTimeout(() => {
+        flash.style.opacity = '0';
+        setTimeout(() => {
+          flash.remove();
+        }, 500); // wait for transition to finish
+      }, 3000); // show for 3 seconds
+    }
 });

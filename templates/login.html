@@ -117,20 +117,24 @@
                     </div>
                     <button type="submit" class="submit-button" style="width: 100%;">Create Account</button>
                 </form>
-                {% with messages = get_flashed_messages(with_categories=true) %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
-    {% for category, message in messages %}
-      <div class="alert alert-{{ category }} mt-2">{{ message }}</div>
-    {% endfor %}
+    <div class="flash-container">
+      {% for category, message in messages %}
+        <div class="custom-flash alert-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    </div>
   {% endif %}
 {% endwith %}
+
+
             </div>
             <div class="modal-footer">
                 <p id="toggle-form-text">Don't have an account? <a href="#" id="toggle-form">Sign Up</a></p>
             </div>
         </div>
     </div>
-
-    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 </body>
+   <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 </html>
