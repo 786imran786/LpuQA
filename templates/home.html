@@ -10,13 +10,13 @@
 </head>
 <body>
     <!-- Header -->
-    <header>
+     <header>
         <div class="header-container">
             <button class="mobile-menu-toggle" id="mobile-menu-toggle">
                 <i class="fas fa-bars"></i>
             </button>
             
-           <a href="{{ url_for('index') }}" class="logo">
+            <a href="{{ url_for('index') }}" class="logo">
 <img src="{{ url_for('static', filename='uploads/logo.png') }}" 
      alt="Logo" 
      style="height: 50px; width: auto; max-width: 100%; object-fit: contain;">
@@ -24,31 +24,35 @@
 <span class="logo-text">AskLpu</span>
 
             </a>
-            
-<form method="GET" action="{{ url_for('search') }}">
+
     <div class="search-container">
         <i class="fas fa-search search-icon"></i>
+        <form method="GET" action="{{ url_for('search') }}">
         <input type="text" class="search-bar" name="query" placeholder="Search questions, answers, topics...">
+    </form>
     </div>
-</form>
+
+
 
             <div class="nav-icons">
-                <a href="{{url_for('login')}}" class="nav-icon" id="ask-btn">
+                <a href="{{url_for('ask')}}" class="nav-icon" id="ask-btn">
                     <i class="fas fa-plus-circle"></i>
                     <span>Ask</span>
                 </a>
                 <div class="nav-icon" id="notifications-btn">
                     <i class="fas fa-bell"></i>
                     <span>Notif</span>
-                    <div class="notification-badge">3</div>
+                    
                 </div>
                 <div class="theme-toggle" id="theme-toggle">
                     <i class="fas fa-moon toggle-icon" id="theme-icon"></i>
                     <span class="toggle-text">Dark Mode</span>
                 </div>
-                <a href="{{url_for('login')}}" class="user-avatar" id="profile-btn">
- 
-  <img src="https://api.dicebear.com/6.x/avataaars/svg?seed=default" alt="Avatar">
+                <a href="{{url_for('profile')}}" class="user-avatar" id="profile-btn">
+                    
+
+
+  <img src="https://api.dicebear.com/6.x/avataaars/svg?seed=male" alt="Default Avatar">
 
                 </a>
             </div>
