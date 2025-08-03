@@ -83,6 +83,7 @@ class Question(db.Model):
     subject = db.Column(db.String(50), nullable=True)
     image = db.Column(db.String(200), nullable=True)
     answers = db.relationship('Answer', backref='question', lazy=True, cascade="all, delete")
+
 class Answer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text, nullable=False)
@@ -681,5 +682,5 @@ def logout():
 
 if __name__ == '__main__':
     with app.app_context():
-        db.create_all()
-    app.run(host='0.0.0.0', port=os.environ.get("PORT", 5000), debug=True)
+        db.create_all()  # This creates all tables from your models
+    app.run(debug=False)
