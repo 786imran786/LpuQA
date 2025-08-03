@@ -530,6 +530,8 @@ def downvote(answer_id):
 #profile
 @app.route('/profile')
 def profile():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
     user = User.query.get(session['user_id'])
     questions = Question.query.filter_by(user_id=user.id).all()
     answers = Answer.query.filter_by(user_id=user.id).all()
