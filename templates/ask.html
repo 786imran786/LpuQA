@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AskLpu</title>
+    <title>AskPu</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         <link rel="stylesheet" href="{{url_for ('static',filename='css/styles.css')}}">
 </head>
@@ -20,7 +20,7 @@
      alt="Logo" 
      style="height: 50px; width: auto; max-width: 100%; object-fit: contain;">
      <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600&display=swap" rel="stylesheet">
-<span class="logo-text">AskLpu</span>
+<span class="logo-text">AskPu</span>
 
             </a>
 
@@ -57,7 +57,7 @@
      alt="Logo" 
      style="height: 50px; width: auto; max-width: 100%; object-fit: contain;">
      <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600&display=swap" rel="stylesheet">
-<span class="logo-text">AskLpu</span>
+<span class="logo-text">AskPu</span>
 
             </a>
             <button class="close-mobile-menu" id="close-mobile-menu">
@@ -139,7 +139,15 @@
                                 <button class="tool-button" title="List"><i class="fas fa-list-ul"></i></button>
                                 <button class="tool-button" title="Numbered List"><i class="fas fa-list-ol"></i></button>
                                 <button class="tool-button" title="Link"><i class="fas fa-link"></i></button>
-                                <button class="tool-button" title="Image"><i class="fas fa-image"></i></button>
+                                <!--i want to upload image here from my local machine-->
+<!-- Inside your toolbar -->
+<button type="button" class="tool-button" title="Image" id="image-button">
+  <i class="fas fa-camera"></i>
+</button>
+<input type="file" id="image-upload" accept="image/*" multiple style="display: none;">
+
+
+
                                 <button class="tool-button" title="Code"><i class="fas fa-code"></i></button>
                             </div>
                             <div class="editor-content" id="editor" contenteditable="true"></div>
@@ -217,23 +225,27 @@
             </div>
         </div>
     </div>
-<script>
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("image-button").addEventListener("click", function () {
+        document.getElementById("image-upload").click();
+    });
+});
+</script>
+
+   <script>
 document.addEventListener("DOMContentLoaded", function () {
     const editor = document.getElementById("editor");
     const hiddenInput = document.getElementById("hidden-content");
+    const imageUpload = document.getElementById("image-upload");
 
-    // Toolbar buttons
+    // ===== Handle Toolbar Buttons =====
     document.querySelectorAll(".tool-button").forEach(button => {
         button.addEventListener("click", function (e) {
             e.preventDefault();
             const command = this.title.toLowerCase();
 
-            if (command === "image") {
-                const url = prompt("Enter image URL");
-                if (url) {
-                    document.execCommand("insertImage", false, url);
-                }
-            } else if (command === "link") {
+            if (command === "link") {
                 const url = prompt("Enter URL");
                 if (url) {
                     document.execCommand("createLink", false, url);
@@ -249,12 +261,67 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // Form submission – capture HTML from contenteditable
+    // ===== Handle Image Upload to Server =====
+    document.getElementById('image-upload').addEventListener('change', function () {
+    const files = this.files;
+    const editor = document.getElementById('editor');
+
+    for (let i = 0; i < files.length; i++) {
+        const formData = new FormData();
+        formData.append('image', files[i]);
+
+        fetch('/upload_image', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const imgTag = `<img src="${data.url}" alt="Uploaded Image" style="max-width: 100%; border-radius: 10px; margin-top: 10px;" />`;
+                editor.innerHTML += imgTag;
+            } else {
+                alert("Image upload failed: " + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+});
+
+    // ===== Capture Form HTML on Submit =====
     document.getElementById("ask-question-form").addEventListener("submit", function () {
         hiddenInput.value = editor.innerHTML;
     });
+
+    // ===== Toggle Answer Display =====
+    window.toggleAnswer = function (questionId) {
+        const box = document.getElementById('answer-toggle-' + questionId);
+        if (box.style.display === 'none' || box.style.display === '') {
+            box.style.display = 'block';
+        } else {
+            box.style.display = 'none';
+        }
+    };
+
+    // ===== Toggle Comments Display =====
+    window.toggleComments = function (answerId) {
+        const box = document.getElementById('comment-toggle-' + answerId);
+        if (box.style.maxHeight && box.style.maxHeight !== '0px') {
+            box.style.maxHeight = '0px';
+            box.style.opacity = '0';
+            setTimeout(() => { box.style.display = 'none'; }, 400);
+        } else {
+            box.style.display = 'block';
+            requestAnimationFrame(() => {
+                box.style.maxHeight = box.scrollHeight + 'px';
+                box.style.opacity = '1';
+            });
+        }
+    };
 });
 </script>
+
        <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 </body>
 </html>

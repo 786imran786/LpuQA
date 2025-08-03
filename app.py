@@ -11,7 +11,7 @@ import random
 from dotenv import load_dotenv
 import requests
 import json
-
+from werkzeug.utils import secure_filename
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '0658145f863644a6143bdb370000274e'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
@@ -250,8 +250,8 @@ def otp_gene():
 
 @app.route('/otp', methods=['POST', 'GET'])
 def otp():
-    flash('OTP sent', 'success')
     if request.method == 'POST':
+        flash('OTP sent', 'success')
         otp = request.form['otp']
         x = session.get('user_id')
         user = User.query.get(x)
@@ -430,7 +430,13 @@ def delete_answer(answer_id):
 
 @app.route('/delete/<int:question_id>')
 def delete_q(question_id):
-    question = Question.query.get(question_id)
+    question = Question.query.get_or_404(question_id)
+
+    # Delete all notifications related to answers of this question
+    for answer in question.answers:
+        Notification.query.filter_by(link=url_for('index') + f"?question_id={question.id}").delete()
+
+    # Delete the question (this will also delete its answers if relationship is set to cascade)
     db.session.delete(question)
     db.session.commit()
     flash("Question deleted successfully!", "success")
@@ -643,7 +649,25 @@ def comment():
     flash("Comment posted successfully!", "success")
     return redirect(url_for('index', question_id=answer.question_id))
 
-    
+
+@app.route('/upload_image', methods=['POST'])
+def upload_image():
+    if 'image' not in request.files:
+        return jsonify({'success': False, 'error': 'No file part'})
+
+    file = request.files['image']
+    if file.filename == '':
+        return jsonify({'success': False, 'error': 'No selected file'})
+
+    if file:
+        filename = secure_filename(file.filename)
+        filepath = os.path.join('static/uploads', filename)
+        file.save(filepath)
+        file_url = url_for('static', filename='uploads/' + filename)
+        return jsonify({'success': True, 'url': file_url})
+
+    return jsonify({'success': False, 'error': 'Unknown error'})
+   
 @app.route('/about_us')
 def about_us():
     return render_template('about_us.html')

@@ -576,6 +576,15 @@ font-family: 'Dancing Script', cursive;
     background-color: var(--hover-bg);
     color: var(--text-color);
 }
+.question-content img {
+  max-width: 80%;
+  height: auto;
+  border-radius: 12px;
+  margin: 10px 0;
+  display: block;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  object-fit: contain;
+}
 
 .editor-content {
     min-height: 15px;

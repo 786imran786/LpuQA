@@ -21,7 +21,7 @@
      alt="Logo" 
      style="height: 50px; width: auto; max-width: 100%; object-fit: contain;">
      <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600&display=swap" rel="stylesheet">
-<span class="logo-text">AskLpu</span>
+<span class="logo-text">AskPu</span>
 
             </a>
 
@@ -67,7 +67,7 @@
      alt="Logo" 
      style="height: 50px; width: auto; max-width: 100%; object-fit: contain;">
      <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600&display=swap" rel="stylesheet">
-<span class="logo-text">AskLpu</span>
+<span class="logo-text">AskPu</span>
 
             </div>
             <button class="close-mobile-menu" id="close-mobile-menu">
@@ -191,7 +191,8 @@
                 <h2 class="question-title">{{ question.title }}</h2>
                 
                 <div class="question-content">
-                    {{ question.description|truncate(200) |safe }}
+                    
+                    {{ question.description |safe }}
                 </div>
                 
                 <div class="question-footer">
@@ -265,7 +266,6 @@
 
   <!-- Comments toggle inside each answer -->
   <b style="cursor: pointer; color: #3f51b5;" onclick="toggleComments('{{ answer.id }}')">Comments:</b>
-
   <div id="comment-toggle-{{ answer.id }}" style="overflow: hidden; max-height: 0; opacity: 0; display: none; transition: max-height 0.4s ease, opacity 0.4s ease;">
     {% for comment in answer.comments %}
     <div class="coment-box">
