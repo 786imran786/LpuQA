@@ -609,6 +609,7 @@ def delete():
     db.session.delete(user)
     db.session.commit()
     return redirect(url_for('login'))
+
 @app.route('/comment', methods=['POST'])
 def comment():
     if 'user_id' not in session:
@@ -620,7 +621,6 @@ def comment():
     if not content or not answer_id:
         flash("Comment or answer reference missing!", "danger")
         return redirect(url_for('index'))
-
     new_comment = Comment(
         content=content,
         answer_id=int(answer_id),
@@ -640,9 +640,8 @@ def comment():
         )
         db.session.add(notify)
         db.session.commit()
-
     flash("Comment posted successfully!", "success")
-    return redirect(url_for('', question_id=answer.question_id))
+    return redirect(url_for('index', question_id=answer.question_id))
 
     
 @app.route('/about_us')

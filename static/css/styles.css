@@ -578,7 +578,7 @@ font-family: 'Dancing Script', cursive;
 }
 
 .editor-content {
-    min-height: 150px;
+    min-height: 15px;
     padding: 1.2rem;
     outline: none;
     background-color: var(--card-bg);

@@ -219,87 +219,78 @@
                        </a>
                        {% endif %}
                     </div>
-                    
-
                 </div>
-                
-                <!-- Comments Section -->
-                 {% for answer in question.answers %}
-                <div class="comments-section">
-                    <div class="comment">
-                        <div class="comment-avatar">{{ answer.author.first_name[0] }}{{ answer.author.last_name[0] }}</div>
-                        <div class="comment-content">
-                            <div class="comment-header">
-                                <div class="comment-author">{{ answer.author.username }}</div>
-                                <div class="comment-time">answered {{ answer.created_at.strftime('%b %d, %Y') }}
-                                </div>
-                            </div>
+                <br>
+                <br>
+<h3 style="cursor: pointer; color: #3f51b5;" onclick="toggleAnswer('{{ question.id }}')">Answers:</h3>
 
-<div style="display: flex; flex-direction: column; align-items: center; float: right; margin-left: 10px;">
+<div id="answer-toggle-{{ question.id }}" style="display: none; transition: all 0.3s ease;">
 
+  {% for answer in question.answers %}
+  <div class="comments-section">
+    <div class="comment">
+      <div class="comment-avatar">{{ answer.author.first_name[0] }}{{ answer.author.last_name[0] }}</div>
+      <div class="comment-content">
+        <div class="comment-header">
+          <div class="comment-author">{{ answer.author.username }}</div>
+          <div class="comment-time">
+            answered {{ answer.created_at.strftime('%b %d, %Y') }}
+          </div>
+        </div>
 
-  <button 
-    class="upvote-btn" 
-    data-answer-id="{{ answer.id }}" 
-    onclick="handleVote('{{ answer.id }}', 'upvote')" 
-    style="border: none; background: none; color: rgb(0, 142, 43); cursor: pointer;">
-<h4> Upvote</h4>
-</button>
+        <div style="display: flex; flex-direction: column; align-items: center; float: right; margin-left: 10px;">
+          <button class="upvote-btn" onclick="handleVote('{{ answer.id }}', 'upvote')" style="border: none; background: none; color: green;">
+            <h4>Upvote</h4>
+          </button>
+          <span class="vote-score" id="score-{{ answer.id }}">{{ answer.score }}</span>
+          <button class="downvote-btn" onclick="handleVote('{{ answer.id }}', 'downvote')" style="border: none; background: none; color: gray;">
+            <h5>Downvote</h5>
+          </button>
+        </div>
 
-<span class="vote-score" id="score-{{ answer.id }}">{{ answer.score }}</span>
+        <div class="comment-text">{{ answer.content | safe }}</div>
 
-<button 
-    class="downvote-btn" 
-    data-answer-id="{{ answer.id }}" 
-    onclick="handleVote('{{ answer.id }}', 'downvote')"
-    style="border: none; background: none; color: rgb(157, 154, 154); cursor: pointer;">
-    <h5>Downvote</h5>
-</button>
-</div>   
-                            <div class="comment-text">
-                                
-                              {{ answer.content | safe }}
-                            </div>
-                            <div class="comment-actions">
-                               
-                                {% if answer.author.id == user.id %}
-                                
-                                <form method="POST" action="{{ url_for('delete_answer', answer_id=answer.id) }}" style="display: inline;">
-                                <button type="submit" class="comment-action" style="border: none; background: none; color: red; cursor: pointer;">
-                                         Delete
-                                        </button>
-                                            </form>
-  
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <b>Comments</b>
-                {% for comment in answer.comments %}
-<div class="coment-box">
-  <div class="comment-text">
-    
-    <div class="comment-avatar">{{ answer.author.first_name[0] }}{{ answer.author.last_name[0] }}</div>
-    <div>     <p><strong>{{ comment.user.username }}</strong>: {{ comment.content }}</p></div>
-    <small>{{ comment.created_at|time_ago }}</small>
-    
-</div>
+        <div class="comment-actions">
+          {% if answer.author.id == user.id %}
+          <form method="POST" action="{{ url_for('delete_answer', answer_id=answer.id) }}" style="display: inline;">
+            <button type="submit" class="comment-action" style="border: none; background: none; color: red;">
+              Delete
+            </button>
+          </form>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
 
+  <!-- Comments toggle inside each answer -->
+  <b style="cursor: pointer; color: #3f51b5;" onclick="toggleComments('{{ answer.id }}')">Comments:</b>
+
+  <div id="comment-toggle-{{ answer.id }}" style="overflow: hidden; max-height: 0; opacity: 0; display: none; transition: max-height 0.4s ease, opacity 0.4s ease;">
+    {% for comment in answer.comments %}
+    <div class="coment-box">
+      <div class="comment-text">
+        <div class="comment-avatar">{{ answer.author.first_name[0] }}{{ answer.author.last_name[0] }}</div>
+        <div><p><strong>{{ comment.user.username }}</strong>: {{ comment.content }}</p></div>
+        <small>{{ comment.created_at|time_ago }}</small>
+      </div>
+    </div>
+    {% endfor %}
+
+    <form action="{{ url_for('comment') }}" method="POST">
+      <input type="hidden" name="answer_id" value="{{ answer.id }}">
+      <div class="textarea-container">
+        <input type="text" name="comm" class="styled-textarea" placeholder="Type your message...">
+        <button type="submit" class="send-button">Send</button>
+      </div>
+    </form>
+    <br>
+    <hr>
   </div>
   {% endfor %}
-<form action="{{url_for('comment')}}" method="POST">
-    <input type="hidden" name="answer_id" value="{{ answer.id }}">
-  <div class="textarea-container">
-    <textarea name="comm" class="styled-textarea" placeholder="Type your message..."></textarea>
-    <button type="submit" class="send-button">Send</button>
-  </div>
-</form>
-                <br>
-                <hr>
-                {% endfor %}
-             
-            </div>
+
+</div>
+</div>
             
 <!--              -->
             <!-- Answer Form -->
@@ -375,6 +366,32 @@
 <div>
     <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 <!-- place this after all your answers are rendered -->
+ <script>
+function toggleAnswer(questionId) {
+  const box = document.getElementById('answer-toggle-' + questionId);
+  if (box.style.display === 'none' || box.style.display === '') {
+    box.style.display = 'block';
+  } else {
+    box.style.display = 'none';
+  }
+}
+
+function toggleComments(answerId) {
+  const box = document.getElementById('comment-toggle-' + answerId);
+  if (box.style.maxHeight && box.style.maxHeight !== '0px') {
+    box.style.maxHeight = '0px';
+    box.style.opacity = '0';
+    setTimeout(() => { box.style.display = 'none'; }, 400);
+  } else {
+    box.style.display = 'block';
+    requestAnimationFrame(() => {
+      box.style.maxHeight = box.scrollHeight + 'px';
+      box.style.opacity = '1';
+    });
+  }
+}
+</script>
+
 <script>
     
 document.addEventListener("DOMContentLoaded", function () {
