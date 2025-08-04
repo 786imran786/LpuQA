@@ -14,7 +14,8 @@ import json
 from werkzeug.utils import secure_filename
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '0658145f863644a6143bdb370000274e'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+load_dotenv()
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['WTF_CSRF_ENABLED'] = True
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
@@ -116,7 +117,7 @@ class Notification(db.Model):
     recipient = db.relationship('User', foreign_keys=[recipient_id], backref='received_notifications',cascade="all, delete")
     sender = db.relationship('User', foreign_keys=[sender_id], backref='sent_notifications',cascade="all, delete")
 #moderation
-load_dotenv()
+
 
 def is_question_safe(question):
     url = f"https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze?key={os.getenv('api_key')}"
@@ -216,7 +217,7 @@ def signup():
             username=username,
             email=email,
             c_id=c_id,
-            password=password,
+            password=hashed_password,
             department=department,
             year=year
         )
