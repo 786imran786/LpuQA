@@ -50,7 +50,7 @@
                 </div>
                 <a href="{{url_for('profile')}}" class="user-avatar" id="profile-btn">
                     {% if user.image %}
-  <img src="{{ url_for('static', filename='uploads/' + user.image) }}" alt="Avatar">
+  <img src="{{ user.image }}" alt="Avatar">
 {% else %}
   <img src="https://api.dicebear.com/6.x/avataaars/svg?seed={{ user.username }}" alt="Default Avatar">
 {% endif %}
@@ -177,7 +177,7 @@
                 <div class="card-header">
                     <div class="user-info">
                         {% if question.author.image %}
-  <img src="{{ url_for('static', filename='uploads/' + question.author.image) }}" alt="Avatar">
+  <img src="{{ question.author.image }}" alt="Avatar">
 {% else %}
   <img src="https://api.dicebear.com/6.x/avataaars/svg?seed={{ question.author.username }}" alt="Default Avatar">
 {% endif %}
@@ -327,7 +327,7 @@
                 <h3 class="sidebar-title">Your Profile</h3>
                 <div class="user-info" style="margin-bottom: 1.5rem;">
                     {% if user.image %}
-  <img src="{{ url_for('static', filename='uploads/' + user.image) }}" alt="Avatar">
+  <img src="{{ user.image }}" alt="Avatar">
 {% else %}
   <img src="https://api.dicebear.com/6.x/avataaars/svg?seed={{ user.username }}" alt="Default Avatar">
 {% endif %}

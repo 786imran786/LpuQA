@@ -358,13 +358,12 @@ def ask():
     if 'user' not in session:
         return redirect(url_for('login'))
     user = User.query.get(session['user_id'])
-    return render_template('ask.html',user=user)    
+    return render_template('ask.html',user=user)  
 
 @app.route('/askques', methods=['GET', 'POST'])
 def askques():
     if 'user_id' not in session:
         return redirect(url_for('login'))
-
     if request.method == 'POST':
         image_url = request.form.get('image_url', '').strip()
         title = request.form.get('title', '').strip()
@@ -592,6 +591,14 @@ def update():
     skills=request.form.get('skills_input')
     location=request.form.get('location')
     course=request.form.get('course')
+    image=request.files.get('avatar')
+    filename = f"{uuid.uuid4().hex}_{image.filename}"
+    file_bytes = image.read()
+    supabase.storage.from_('lpuqa').upload(
+            path=filename,
+            file=file_bytes
+        )
+    public_url = f"https://xvafbxxjlyhiwrsnqkhv.supabase.co/storage/v1/object/public/lpuqa/{filename}"
 
     update=User(
         full_name=full_name,
@@ -601,7 +608,8 @@ def update():
         interest=interest,
         skiils=skills,
         location=location,
-        course=course
+        course=course,
+        image=public_url
     )
     update.id=session['user_id']
     db.session.merge(update)
@@ -664,17 +672,15 @@ def upload_image():
     file = request.files.get('image')
     if not file:
         return jsonify({'success': False, 'error': 'No file uploaded'}), 400
-
     filename = f"{uuid.uuid4().hex}_{file.filename}"
     try:
         # Read file content into bytes
         file_bytes = file.read()
-
         # Upload to Supabase (correct bucket)
         supabase.storage.from_('lpuqa').upload(
             path=filename,
             file=file_bytes
-        )
+        )   
 
         # ✅ Get the public URL from the same 'lpuqa' bucket
         public_url = f"https://xvafbxxjlyhiwrsnqkhv.supabase.co/storage/v1/object/public/lpuqa/{filename}"
