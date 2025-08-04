@@ -270,31 +270,32 @@ def otp():
             return redirect(url_for('otp'))
     return render_template('otp.html')
 
-
 #login page
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
-        # Regular user login
+
+        # 🔧 Fetch user from the database
         user = User.query.filter_by(email=email).first()
-        if user and user.password == password:
+
+        if user and check_password_hash(user.password, password):
             session['user'] = email
             session['user_id'] = user.id
-            if user.verify==True:
+
+            if user.verify == True:
                 return redirect(url_for('index'))
             else:
-                x = session.get('user_id')
-                user=user.query.get(x)
+                # If not verified, delete user and redirect to signup
                 db.session.delete(user)
                 db.session.commit()
+                flash("Your account was not verified. Please sign up again.", "warning")
                 return redirect(url_for('signup'))
         else:
             flash('Invalid credentials!', 'danger')
-    else:
-        return render_template('login.html')
     return render_template('login.html')
+
 #index page
 @app.route('/index')
 def index():
