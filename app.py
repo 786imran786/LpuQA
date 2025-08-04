@@ -253,7 +253,6 @@ def otp_gene():
 @app.route('/otp', methods=['POST', 'GET'])
 def otp():
     if request.method == 'POST':
-        flash('OTP sent', 'success')
         otp = request.form['otp']
         x = session.get('user_id')
         user = User.query.get(x)
@@ -687,3 +686,4 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()  # This creates all tables from your models
     app.run(debug=False)
+
