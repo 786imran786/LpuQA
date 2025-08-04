@@ -670,20 +670,19 @@ def upload_image():
         return jsonify({'success': True, 'url': file_url})
 
     return jsonify({'success': False, 'error': 'Unknown error'})
-   
+@app.teardown_appcontext
+def shutdown_session(exception=None):
+    db.session.remove()
 @app.route('/about_us')
 def about_us():
     return render_template('about_us.html')
-
 @app.route('/logout')
 def logout():
-
-    session.pop('user',None)
+    session.clear()  
     return redirect(url_for('home'))
-
 
 if __name__ == '__main__':
     with app.app_context():
-        db.create_all()  # This creates all tables from your models
+        db.create_all()  
     app.run(debug=False)
 
