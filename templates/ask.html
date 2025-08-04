@@ -145,6 +145,7 @@
   <i class="fas fa-camera"></i>
 </button>
 <input type="file" id="image-upload" accept="image/*" multiple style="display: none;">
+<input type="hidden" name="image_url" id="image-url">
 
 
 
@@ -279,6 +280,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (data.success) {
                 const imgTag = `<img src="${data.url}" alt="Uploaded Image" style="max-width: 100%; border-radius: 10px; margin-top: 10px;" />`;
                 editor.innerHTML += imgTag;
+                document.getElementById("image-url").value = data.url;
             } else {
                 alert("Image upload failed: " + data.error);
             }

@@ -10,6 +10,10 @@ from flask_mail import Mail, Message
 import random
 from dotenv import load_dotenv
 import requests
+
+from flask import request, jsonify
+from supabase_client import supabase
+import uuid
 import json
 from werkzeug.utils import secure_filename
 app = Flask(__name__)
@@ -280,7 +284,7 @@ def login():
         # 🔧 Fetch user from the database
         user = User.query.filter_by(email=email).first()
 
-        if user and check_password_hash(user.password, password):
+        if user and user.password==password:
             session['user'] = email
             session['user_id'] = user.id
 
@@ -362,6 +366,7 @@ def askques():
         return redirect(url_for('login'))
 
     if request.method == 'POST':
+        image_url = request.form.get('image_url', '').strip()
         title = request.form.get('title', '').strip()
         description = request.form.get('description', '').strip()
         tags = request.form.get('tags', '').strip()
@@ -378,7 +383,8 @@ def askques():
             tags=tags,
             department=department,
             subject=subject,
-            user_id=session['user_id']
+            user_id=session['user_id'],
+            image=image_url
             )
             db.session.add(new_question)
             db.session.commit()
@@ -653,30 +659,40 @@ def comment():
     flash("Comment posted successfully!", "success")
     return redirect(url_for('index', question_id=answer.question_id))
 
-
 @app.route('/upload_image', methods=['POST'])
 def upload_image():
-    if 'image' not in request.files:
-        return jsonify({'success': False, 'error': 'No file part'})
+    file = request.files.get('image')
+    if not file:
+        return jsonify({'success': False, 'error': 'No file uploaded'}), 400
 
-    file = request.files['image']
-    if file.filename == '':
-        return jsonify({'success': False, 'error': 'No selected file'})
+    filename = f"{uuid.uuid4().hex}_{file.filename}"
+    try:
+        # Read file content into bytes
+        file_bytes = file.read()
 
-    if file:
-        filename = secure_filename(file.filename)
-        filepath = os.path.join('static/uploads', filename)
-        file.save(filepath)
-        file_url = url_for('static', filename='uploads/' + filename)
-        return jsonify({'success': True, 'url': file_url})
+        # Upload to Supabase (correct bucket)
+        supabase.storage.from_('lpuqa').upload(
+            path=filename,
+            file=file_bytes
+        )
 
-    return jsonify({'success': False, 'error': 'Unknown error'})
+        # ✅ Get the public URL from the same 'lpuqa' bucket
+        public_url = f"https://xvafbxxjlyhiwrsnqkhv.supabase.co/storage/v1/object/public/lpuqa/{filename}"
+
+        # 🪄 Save this `public_url` in your Question.image column in DB
+
+        return jsonify({'success': True, 'url': public_url})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
 @app.teardown_appcontext
 def shutdown_session(exception=None):
     db.session.remove()
+
 @app.route('/about_us')
 def about_us():
     return render_template('about_us.html')
+
 @app.route('/logout')
 def logout():
     session.clear()  
