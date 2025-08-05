@@ -64,6 +64,7 @@ class User(db.Model):
     achievement=db.Column(db.String(200), nullable=True)
     course=db.Column(db.String(200), nullable=True)
     verify= db.Column(db.Boolean, default=False)
+    status=db.Column(db.Boolean, default=False)
     voted_on = db.relationship(
         'Answer', 
         secondary=votes_association, 
@@ -267,6 +268,7 @@ def otp():
             session['user_email'] = user.email
             user.otp = None  # clear OTP after use
             user.verify=True
+            user.status=True
             db.session.commit()
             flash ('Welcome to ask Lpu!', 'success')
             return redirect(url_for('index'))
@@ -281,14 +283,16 @@ def login():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
-
         user = User.query.filter_by(email=email).first()
-
+        if email=='admin@123' and password=='admin123':
+            session['user']='admin@123'
+            return redirect(url_for('admin'))
         if user and check_password_hash(user.password, password):
             session['user'] = email
             session['user_id'] = user.id
-
             if user.verify == True:
+                user.status=True
+                db.session.commit()
                 return redirect(url_for('index'))
             else:
                 db.session.delete(user)
@@ -298,6 +302,17 @@ def login():
         else:
             flash('Invalid credentials!', 'danger')
     return render_template('login.html')
+@app.route('/admin')
+def admin():
+    user_admin=session.get('user')
+    
+
+    if user_admin != 'admin@123':
+        flash("Your are not Authorized", "warning")
+        return redirect(url_for('login'))
+    users = User.query.all()
+    question = Question.query.order_by(desc(Question.created_at)).all()
+    return render_template('admin.html',user=users,questions=question)
 #index page
 @app.route('/index')
 def index():
@@ -758,7 +773,10 @@ def about_us():
 
 @app.route('/logout')
 def logout():
-    session.clear()  
+    user = User.query.get(session['user_id'])
+    user.status=False
+    db.session.commit()
+    session.clear()
     return redirect(url_for('home'))
 
 if __name__ == '__main__':

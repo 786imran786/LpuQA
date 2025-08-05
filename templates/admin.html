@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel | UniQ</title>
+    <style>
+        :root {
+            --primary: #4a6bff;
+            --primary-light: #e0e6ff;
+            --danger: #ff4a4a;
+            --danger-light: #ffe0e0;
+            --success: #2ecc71;
+            --success-light: #e0ffe6;
+            --warning: #ffb74a;
+            --warning-light: #fff0e0;
+            --dark: #2c3e50;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --gray-light: #e9ecef;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .section {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 15px;
+            background-color: var(--primary-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+
+        .search-bar {
+            padding: 8px 15px;
+            border: 1px solid var(--gray-light);
+            border-radius: 4px;
+            width: 300px;
+            font-size: 14px;
+        }
+
+        .card {
+            padding: 15px;
+            border-bottom: 1px solid var(--gray-light);
+            cursor: pointer;
+        }
+
+        .card:hover {
+            background-color: var(--light);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .card-content.active {
+            max-height: 500px;
+            padding-top: 10px;
+        }
+
+        .answer-item {
+            padding: 10px;
+            margin: 5px 0;
+            background-color: var(--light);
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .badge {
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .badge-success {
+            background-color: var(--success-light);
+            color: var(--success);
+        }
+
+        .badge-warning {
+            background-color: var(--warning-light);
+            color: var(--warning);
+        }
+
+        .badge-danger {
+            background-color: var(--danger-light);
+            color: var(--danger);
+        }
+
+        .btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-sm {
+            padding: 4px 8px;
+            font-size: 12px;
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            padding: 0 15px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--gray-light);
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            margin: 15px;
+            padding: 10px 20px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .search-bar {
+                width: 100%;
+            }
+            
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+            
+            .answer-item {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-user-shield"></i> Admin Panel</h1>
+        
+        <!-- User Management Section -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title"><i class="fas fa-users"></i> User Management</h2>
+                <input type="text" class="search-bar" placeholder="Search users...">
+            </div>
+            
+            <!-- User cards would be dynamically loaded here -->
+             {%for u in user%}
+            <div class="card">
+                <div class="card-header" onclick="toggleContent('user-content-{{ u.id }}')">
+                    
+                    <div>
+                        <strong>{{u.username}}</strong> {{u.email}}
+                        
+                        {%if u.status%}
+                        <span class="badge badge-success">
+                            Active
+                            </span>
+                            {%else%}
+                            <span class="badge badge-success">
+                            Not active
+                            </span>
+                            {%endif%}
+                    </div>
+                    
+
+                    <div>
+                        <!-- <button class="btn btn-sm btn-danger" onclick="banUser(1, event)">
+                            <i class="fas fa-ban"></i> Ban
+                        </button> -->
+                    </div>
+                </div>
+                {% for question in u.questions %}
+                <div class="card-content" id="user-content-{{ u.id }}">
+                    
+    <div class="answer-item">
+        <div>
+            <strong>Posted question:</strong> {{ question.title }}
+            <br>
+            <strong>Posted answer:</strong> 
+            <br>
+            {%for answer in question.answers %}
+            {{answer.content}}<br>
+            {% endfor %}
+            
+        </div>
+        <!-- <button class="btn btn-sm btn-danger" onclick="removeContent('question-{{ question.id }}', event)">
+            <i class="fas fa-trash"></i> Remove
+        </button> -->
+    </div>
+
+
+
+                        
+                    
+                </div>
+                {%endfor%}
+                
+            </div>
+            {%endfor%}
+        </div>
+        
+        <!-- Questions & Answers Section -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title"><i class="fas fa-question-circle"></i> Questions & Answers</h2>
+                <input type="text" class="search-bar" placeholder="Search questions...">
+            </div>
+            
+            <div class="card">
+                <div class="card-header" onclick="toggleContent('q1-content')">
+                    <div>
+                        <strong>How to solve this calculus problem?</strong>
+                        <span class="badge badge-success">3 answers</span>
+                    </div>
+                    <div>
+                        <button class="btn btn-sm btn-danger" onclick="removeQuestion(1, event)">
+                            <i class="fas fa-trash"></i> Remove
+                        </button>
+                    </div>
+                </div>
+                <div class="card-content" id="q1-content">
+                    <div class="answer-item">
+                        <div>
+                            <strong>Answer by jane_smith:</strong> "You need to apply the chain rule..."
+                            <span class="badge badge-success">Upvoted (15)</span>
+                        </div>
+                        <button class="btn btn-sm btn-danger" onclick="removeAnswer('a1-1', event)">
+                            <i class="fas fa-trash"></i> Remove
+                        </button>
+                    </div>
+                    <div class="answer-item" id="a1-1">
+                        <div>
+                            <strong>Answer by math_tutor:</strong> "Here's a step-by-step solution..."
+                            <span class="badge badge-success">Upvoted (8)</span>
+                        </div>
+                        <button class="btn btn-sm btn-danger" onclick="removeAnswer('a1-2', event)">
+                            <i class="fas fa-trash"></i> Remove
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header" onclick="toggleContent('q2-content')">
+                    <div>
+                        <strong>Physics homework help needed</strong>
+                        <span class="badge badge-warning">No answers yet</span>
+                    </div>
+                    <div>
+                        <button class="btn btn-sm btn-danger" onclick="removeQuestion(2, event)">
+                            <i class="fas fa-trash"></i> Remove
+                        </button>
+                    </div>
+                </div>
+                <div class="card-content" id="q2-content">
+                    <p style="padding: 10px; color: var(--gray);">No answers yet for this question.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- News Management Section -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title"><i class="fas fa-newspaper"></i> Add News</h2>
+            </div>
+            
+            <form id="news-form">
+                <div class="form-group">
+                    <label class="form-label">News Title</label>
+                    <input type="text" class="form-control" placeholder="Enter news title" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">News Content</label>
+                    <textarea class="form-control" placeholder="Write news content here..." required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Featured Image URL</label>
+                    <input type="url" class="form-control" placeholder="https://example.com/image.jpg">
+                </div>
+                
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-paper-plane"></i> Publish News
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Toggle content sections
+        function toggleContent(contentId) {
+            const content = document.getElementById(contentId);
+            content.classList.toggle('active');
+            
+            // Stop event propagation if clicking on buttons inside
+            if (event.target.tagName === 'BUTTON') {
+                event.stopPropagation();
+            }
+        }
+        
+        // User management functions
+        function banUser(userId, event) {
+            event.stopPropagation();
+            if (confirm(`Permanently ban user ${userId}? This cannot be undone.`)) {
+                alert(`User ${userId} banned`);
+                // API call would go here
+            }
+        }
+        
+        function removeContent(contentId, event) {
+            event.stopPropagation();
+            if (confirm("Remove this content?")) {
+                const element = document.getElementById(contentId);
+                if (element) {
+                    element.remove();
+                }
+                alert("Content removed");
+                // API call would go here
+            }
+        }
+        
+        // Q&A functions
+        function removeQuestion(questionId, event) {
+            event.stopPropagation();
+            if (confirm("Remove this question and all its answers?")) {
+                alert(`Question ${questionId} removed`);
+                // API call would go here
+                event.target.closest('.card').remove();
+            }
+        }
+        
+        function removeAnswer(answerId, event) {
+            event.stopPropagation();
+            if (confirm("Remove this answer?")) {
+                alert(`Answer ${answerId} removed`);
+                // API call would go here
+                document.getElementById(answerId).remove();
+            }
+        }
+        
+        // News form submission
+        document.getElementById('news-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert("News published successfully!");
+            this.reset();
+            // API call would go here
+        });
+    </script>
+</body>
+</html>
