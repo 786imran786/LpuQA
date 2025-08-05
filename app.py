@@ -688,6 +688,66 @@ def upload_image():
         return jsonify({'success': True, 'url': public_url})
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
+    
+@app.route('/forget')
+def forget():
+    return render_template('forget_password.html')
+
+@app.route('/forget_password', methods=['POST'])
+def forget_password():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        user = User.query.filter_by(email=email).first()
+        if user:
+            otp=random.randint(100000, 999999)
+            user.otp=otp
+            db.session.commit()
+            session['reset_email'] = email
+            subject="reset password"
+            body="Your verification code is "+str(otp)
+            msg = Message(subject=subject, sender=app.config['MAIL_USERNAME'], recipients=[email])
+            msg.body = body
+            mail.send(msg)
+            return redirect(url_for('otp_page'))
+        else:
+            flash("No account found with that email.", "danger")
+    return render_template('forget_password.html')
+@app.route('/otp_page')
+def otp_page():
+    return render_template('otp_page.html')
+
+@app.route('/otp_ver',methods=['POST'])
+def otp_ver():
+    email=session.get('reset_email')
+    user=User.query.filter_by(email=email).first()
+    otp=request.form.get('otp')
+    if int(user.otp)==int(otp):
+        return redirect(url_for('reset_password_page'))
+    else:
+        flash("otp not valid.", "danger")
+        return redirect('otp_page')
+
+@app.route('/reset_password_page')
+def reset_password_page():
+    return render_template('reset_password.html')
+
+@app.route('/reset_password', methods=['GET', 'POST'])
+def reset_password():
+    email = session.get('reset_email')
+    if not email:
+        flash("Session expired. Try again.", "warning")
+        return redirect(url_for('forget'))
+    if request.method == 'POST':
+        new_password = request.form.get('password')
+        user = User.query.filter_by(email=email).first()
+        if user:
+            user.password = generate_password_hash(new_password)
+            db.session.commit()
+            session.pop('reset_email', None)  # Clear session after use
+            flash("Password reset successful. Please login.", "success")
+            return redirect(url_for('login'))
+    return render_template('reset_password.html')
+
 @app.teardown_appcontext
 def shutdown_session(exception=None):
     db.session.remove()
