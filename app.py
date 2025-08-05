@@ -1,6 +1,7 @@
 from flask import Flask,render_template,url_for,request,flash,redirect,session,jsonify,current_app
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import check_password_hash
 import os
 from flask_migrate import Migrate
 from sqlalchemy import func,desc
@@ -281,17 +282,15 @@ def login():
         email = request.form['email']
         password = request.form['password']
 
-        # 🔧 Fetch user from the database
         user = User.query.filter_by(email=email).first()
 
-        if user and user.password==password:
+        if user and check_password_hash(user.password, password):
             session['user'] = email
             session['user_id'] = user.id
 
             if user.verify == True:
                 return redirect(url_for('index'))
             else:
-                # If not verified, delete user and redirect to signup
                 db.session.delete(user)
                 db.session.commit()
                 flash("Your account was not verified. Please sign up again.", "warning")
@@ -299,7 +298,6 @@ def login():
         else:
             flash('Invalid credentials!', 'danger')
     return render_template('login.html')
-
 #index page
 @app.route('/index')
 def index():
