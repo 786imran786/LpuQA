@@ -688,7 +688,6 @@ def upload_image():
         return jsonify({'success': True, 'url': public_url})
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
-
 @app.teardown_appcontext
 def shutdown_session(exception=None):
     db.session.remove()
@@ -705,5 +704,5 @@ def logout():
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()  
-    app.run(debug=False)
+    app.run(debug=True)
 
