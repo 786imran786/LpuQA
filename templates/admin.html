@@ -232,58 +232,61 @@
             
             <!-- User cards would be dynamically loaded here -->
              {%for u in user%}
-            <div class="card">
-                <div class="card-header" onclick="toggleContent('user-content-{{ u.id }}')">
-                    
-                    <div>
-                        <strong>{{u.username}}</strong> {{u.email}}
-                        
-                        {%if u.status%}
-                        <span class="badge badge-success">
-                            Active
-                            </span>
-                            {%else%}
-                            <span class="badge badge-success">
-                            Not active
-                            </span>
-                            {%endif%}
-                    </div>
-                    
-
-                    <div>
-                        <!-- <button class="btn btn-sm btn-danger" onclick="banUser(1, event)">
-                            <i class="fas fa-ban"></i> Ban
-                        </button> -->
-                    </div>
-                </div>
-                {% for question in u.questions %}
-                <div class="card-content" id="user-content-{{ u.id }}">
-                    
-    <div class="answer-item">
+<div class="card">
+    <div class="card-header" onclick="toggleContent('user-content-{{ u.id }}')">
         <div>
-            <strong>Posted question:</strong> {{ question.title }}
-            <br>
-            <strong>Posted answer:</strong> 
-            <br>
-            {%for answer in question.answers %}
-            {{answer.content}}<br>
-            {% endfor %}
-            
+            <strong>{{u.username}}</strong> {{u.email}}
+            {%if u.status%}
+                <span class="badge badge-success">Active</span>
+            {%else%}
+                <span class="badge badge-warning">Not Active</span>
+            {%endif%}
         </div>
-        <!-- <button class="btn btn-sm btn-danger" onclick="removeContent('question-{{ question.id }}', event)">
-            <i class="fas fa-trash"></i> Remove
-        </button> -->
+
+        <div>
+            <form action="{{ url_for('delete_a', user_id=u.id) }}" method="POST">
+                <button class="btn btn-sm btn-danger">Remove User</button>
+            </form>
+
+            <form action="{{ url_for('ban_user', user_id=u.id) }}" method="POST">
+                <button class="btn btn-sm btn-danger">
+                    {%if not u.ban %}
+                        Ban User
+                    {% else %}
+                        Unban User
+                    {% endif %}
+                </button>
+            </form>
+        </div>
     </div>
 
+    <!-- 💡 Move this outside the questions loop -->
+    <div class="card-content" id="user-content-{{ u.id }}">
+        {% for question in u.questions %}
+        <div class="answer-item">
+            <div>
+                <strong>Posted question:</strong> {{ question.title }}
+                <a href="{{ url_for('delete_q', question_id=question.id) }}" class="btn btn-sm btn-danger">Remove Question</a>
+                <br>
+                <strong>Posted answer:</strong> 
+                <br>
+                {% for answer in question.answers %}
+                    {{answer.content}}
+                    <form action="{{ url_for('delete_answer', answer_id=answer.id) }}" method="POST">
+                        <button class="btn btn-sm btn-danger">Remove Answer</button>
+                    </form>
+                    <br>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
 
-
-                        
-                    
-                </div>
                 {%endfor%}
                 
             </div>
-            {%endfor%}
+          
         </div>
         
         <!-- Questions & Answers Section -->

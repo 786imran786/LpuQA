@@ -64,6 +64,7 @@ class User(db.Model):
     achievement=db.Column(db.String(200), nullable=True)
     course=db.Column(db.String(200), nullable=True)
     verify= db.Column(db.Boolean, default=False)
+    ban= db.Column(db.Boolean, default=False)
     status=db.Column(db.Boolean, default=False)
     voted_on = db.relationship(
         'Answer', 
@@ -122,6 +123,15 @@ class Notification(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     recipient = db.relationship('User', foreign_keys=[recipient_id], backref='received_notifications',cascade="all, delete")
     sender = db.relationship('User', foreign_keys=[sender_id], backref='sent_notifications',cascade="all, delete")
+class News(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    news_title=db.Column(db.String(200), nullable=False)
+    news_disc=db.Column(db.Text, nullable=False)
+    image=db.Column(db.String(200), nullable=True)
+    category=db.Column(db.String(50), nullable=True)#
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
 #moderation
 
 
@@ -291,6 +301,9 @@ def login():
             session['user'] = email
             session['user_id'] = user.id
             if user.verify == True:
+                if user.ban==True:
+                    flash("You are ban by Admin try contact admin!","warning")
+                    return redirect(url_for('login'))
                 user.status=True
                 db.session.commit()
                 return redirect(url_for('index'))
@@ -305,14 +318,39 @@ def login():
 @app.route('/admin')
 def admin():
     user_admin=session.get('user')
-    
-
     if user_admin != 'admin@123':
         flash("Your are not Authorized", "warning")
         return redirect(url_for('login'))
     users = User.query.all()
     question = Question.query.order_by(desc(Question.created_at)).all()
     return render_template('admin.html',user=users,questions=question)
+#delete user admin
+@app.route('/delete_a/<int:user_id>', methods=['POST','GET'])
+def delete_a(user_id):
+    user_admin=session.get('user')
+    if user_admin != 'admin@123':
+        flash("Your are not Authorized", "warning")
+        return redirect(url_for('login'))
+    user=User.query.get(user_id)
+    Notification.query.filter((Notification.sender_id == user.id) | (Notification.recipient_id == user.id)).delete()
+    db.session.delete(user)
+    db.session.commit()
+    return redirect(url_for('admin'))
+#ban user admin
+@app.route('/ban_user/<int:user_id>',methods=['POST','GET'])
+def ban_user(user_id):
+    user_admin=session.get('user')
+    if user_admin != 'admin@123':
+        flash("Your are not Authorized", "warning")
+        return redirect(url_for('login'))
+    user=User.query.get(user_id)
+    if user.ban==True:
+        user.ban=False
+    else:
+        user.ban=True
+    db.session.commit()
+    return redirect(url_for('admin'))
+
 #index page
 @app.route('/index')
 def index():
@@ -442,14 +480,31 @@ def answer(question_id):
 #delete answer
 @app.route('/delete_comment/<int:answer_id>', methods=['POST'])
 def delete_answer(answer_id):
-    answer=Answer.query.get(answer_id)
+    answer = Answer.query.get_or_404(answer_id)
+
+    if session.get('user') == 'admin@123':
+        db.session.delete(answer)
+        db.session.commit()
+        flash("Answer deleted by Admin!", "success")
+        return redirect(url_for('admin'))
+    
     db.session.delete(answer)
     db.session.commit()
-    flash("Answer deleted successfully!", "success")
+    flash("Your answer has been deleted!", "success")
     return redirect(url_for('index'))
+
 
 @app.route('/delete/<int:question_id>')
 def delete_q(question_id):
+    user_admin=session.get('user')
+    if user_admin == 'admin@123':
+        question = Question.query.get_or_404(question_id)
+        for answer in question.answers:
+            Notification.query.filter_by(link=url_for('index') + f"?question_id={question.id}").delete()
+        db.session.delete(question)
+        db.session.commit()
+        flash("Question deleted successfully!", "success")
+        return redirect(url_for('admin'))
     question = Question.query.get_or_404(question_id)
 
     # Delete all notifications related to answers of this question
