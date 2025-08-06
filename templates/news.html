@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College News - UniQ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{url_for ('static',filename='css/styles.css')}}">
+
+    <style>
+        /* Additional styles for news page */
+        .news-card {
+            transition: transform 0.3s ease;
+        }
+        .news-card:hover {
+            transform: translateY(-5px);
+        }
+        .news-category {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+        }
+        .tech { background-color: #e3f2fd; color: #1976d2; }
+        .academic { background-color: #e8f5e9; color: #2e7d32; }
+        .events { background-color: #fff8e1; color: #f57f17; }
+        .news-source {
+            color: var(--gray);
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+        .trending-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header (Same as other pages) -->
+    <header>
+        <div class="header-container">
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <a href="index.html" class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <span>UniQ</span>
+            </a>
+            
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-bar" placeholder="Search news, articles...">
+            </div>
+            
+            <div class="nav-icons">
+                
+                <div class="nav-icon" id="notifications-btn">
+                    <i class="fas fa-bell"></i>
+                    <span>Notif</span>
+                    <div class="notification-badge">3</div>
+                </div>
+                <div class="theme-toggle" id="theme-toggle">
+                    <i class="fas fa-moon toggle-icon" id="theme-icon"></i>
+                    <span class="toggle-text">Dark Mode</span>
+                </div>
+                <a href="profile.html" class="user-avatar">
+                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User Avatar">
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu">
+        <div class="mobile-menu-header">
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <span>UniQ</span>
+            </div>
+            <button class="close-mobile-menu" id="close-mobile-menu">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <a href="index.html" class="menu-item">
+            <i class="fas fa-home"></i>
+            <span>Home Feed</span>
+        </a>
+        <a href="news.html" class="menu-item active-menu">
+            <i class="fas fa-newspaper"></i>
+            <span>College News</span>
+        </a>
+        <a href="ask.html" class="menu-item">
+            <i class="fas fa-question-circle"></i>
+            <span>Ask Question</span>
+        </a>
+        <a href="profile.html" class="menu-item">
+            <i class="fas fa-user"></i>
+            <span>My Profile</span>
+        </a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Left Sidebar -->
+         
+        <div class="sidebar">
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">News Categories</h3>
+                <div class="menu-item active-menu">
+                    <i class="fas fa-globe"></i>
+                    <span>All News</span>
+                </div>
+                <div class="menu-item">
+                    <i class="fas fa-laptop-code"></i>
+                    <span>Tech & Innovation</span>
+                </div>
+                <div class="menu-item">
+                    <i class="fas fa-book"></i>
+                    <span>Academic Updates</span>
+                </div>
+                <div class="menu-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Campus Events</span>
+                </div>
+                <div class="menu-item">
+                    <i class="fas fa-bullhorn"></i>
+                    <span>Announcements</span>
+                </div>
+            </div>
+            
+            
+        </div>
+        
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <div class="content-card">
+                <h2 class="question-title">Today's College News</h2>
+                <div class="trending-tags">
+                    <div class="tag">#exams2024</div>
+                    <div class="tag">#campusplacements</div>
+                    <div class="tag">#researchbreakthrough</div>
+                </div>
+                
+                <!-- Featured News -->
+                <div class="news-card content-card" style="margin-bottom: 1.5rem;">
+                    <div class="card-header">
+                        <div class="user-info">
+                            <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Reporter" style="width:42px;height:42px;">
+                            <div class="user-details">
+                                <div class="user-name">Campus Chronicle</div>
+                                <div class="user-meta">Published 2 hours ago</div>
+                            </div>
+                        </div>
+                        <span class="news-category academic">Academic</span>
+                    </div>
+                    <img src="https://source.unsplash.com/random/800x400/?university,library" alt="News Image" style="width:100%; border-radius:8px; margin:1rem 0;">
+                    <h3 style="font-size:1.3rem; margin-bottom:0.8rem;">Stanford Introduces New AI Ethics Course for All Majors</h3>
+                    <div class="question-content">
+                        <p>Starting Fall 2024, Stanford University will require all undergraduate students to complete a course on AI ethics, regardless of their major. The initiative aims to prepare students for the ethical challenges of emerging technologies...</p>
+                    </div>
+                    <div class="question-footer" style="border-top:none; padding-top:0;">
+                        <button class="action-button">
+                            <i class="fas fa-share"></i>
+                            <span>Share</span>
+                        </button>
+                        <button class="action-button">
+                            <i class="far fa-bookmark"></i>
+                            <span>Save</span>
+                        </button>
+                        <a href="news-detail.html" class="action-button" style="margin-left:auto;">
+                            <span>Read Full Story</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- News Grid -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
+                    <!-- News Item 1 -->
+                    <div class="news-card content-card">
+                        <span class="news-category tech">Technology</span>
+                        <h3 style="font-size:1.1rem; margin-bottom:0.5rem;">MIT Researchers Develop Quantum Computing Breakthrough</h3>
+                        <div class="question-content" style="font-size:0.95rem;">
+                            <p>A team at MIT has created a new quantum algorithm that could revolutionize drug discovery...</p>
+                        </div>
+                        <div class="news-source">
+                            <i class="fas fa-university"></i> MIT News • 5 hours ago
+                        </div>
+                    </div>
+                    
+                    <!-- News Item 2 -->
+                    <div class="news-card content-card">
+                        <span class="news-category events">Events</span>
+                        <h3 style="font-size:1.1rem; margin-bottom:0.5rem;">Annual Tech Fest 'Innova' Returns to IIT Delhi</h3>
+                        <div class="question-content" style="font-size:0.95rem;">
+                            <p>The flagship event featuring hackathons, workshops, and tech talks will be held from March 15-17...</p>
+                        </div>
+                        <div class="news-source">
+                            <i class="fas fa-university"></i> IIT Delhi Bulletin • 1 day ago
+                        </div>
+                    </div>
+                    
+                    <!-- News Item 3 -->
+                    <div class="news-card content-card">
+                        <span class="news-category academic">Academic</span>
+                        <h3 style="font-size:1.1rem; margin-bottom:0.5rem;">Harvard Announces Free Online CS Courses</h3>
+                        <div class="question-content" style="font-size:0.95rem;">
+                            <p>10 introductory computer science courses will be available for free on their learning platform...</p>
+                        </div>
+                        <div class="news-source">
+                            <i class="fas fa-university"></i> Harvard Gazette • 2 days ago
+                        </div>
+                    </div>
+                    
+                    <!-- News Item 4 -->
+                    <div class="news-card content-card">
+                        <span class="news-category tech">Technology</span>
+                        <h3 style="font-size:1.1rem; margin-bottom:0.5rem;">Student Startup Wins $100K at Stanford Competition</h3>
+                        <div class="question-content" style="font-size:0.95rem;">
+                            <p>EcoCharge, a battery tech startup founded by engineering students, secured top honors...</p>
+                        </div>
+                        <div class="news-source">
+                            <i class="fas fa-university"></i> Stanford Daily • 3 days ago
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Newsletter Signup -->
+                <div class="content-card" style="text-align:center; margin-top:2rem; background:linear-gradient(135deg, var(--primary), #5c6bc0); color:white;">
+                    <h3 style="margin-bottom:1rem;">Get Weekly News Updates</h3>
+                    <p style="margin-bottom:1.5rem; opacity:0.9;">Stay informed about campus news, research breakthroughs, and academic opportunities</p>
+                    <div style="max-width:500px; margin:0 auto; display:flex;">
+                        <input type="email" placeholder="Your email" style="flex:1; padding:0.8rem; border:none; border-radius:4px 0 0 4px;">
+                        <button style="background:var(--accent); color:white; border:none; padding:0 1.5rem; border-radius:0 4px 4px 0; cursor:pointer;">
+                            Subscribe
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Sidebar -->
+        <div class="right-sidebar">
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">Trending This Week</h3>
+                <div class="menu-item" style="align-items:flex-start;">
+                    <span style="background:var(--accent); color:white; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-right:0.8rem; flex-shrink:0;">1</span>
+                    <span>New grading policy at UC Berkeley</span>
+                </div>
+                <div class="menu-item" style="align-items:flex-start;">
+                    <span style="background:#78909c; color:white; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-right:0.8rem; flex-shrink:0;">2</span>
+                    <span>Amazon campus hiring 2024</span>
+                </div>
+                <div class="menu-item" style="align-items:flex-start;">
+                    <span style="background:#78909c; color:white; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-right:0.8rem; flex-shrink:0;">3</span>
+                    <span>PhD scholarships in Europe</span>
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+    
+     <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+
+</body>
+</html>

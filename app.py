@@ -350,7 +350,10 @@ def ban_user(user_id):
         user.ban=True
     db.session.commit()
     return redirect(url_for('admin'))
-
+#news
+@app.route('/news')
+def news():
+    return render_template('news.html')
 #index page
 @app.route('/index')
 def index():
