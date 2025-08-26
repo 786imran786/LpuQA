@@ -224,7 +224,7 @@
                             <span>Report</span>
                         </button>
                         {% if question.author.id ==user.id%}
-                       <a href="{{url_for('delete_q',question_id=question.id)}}" class="action-button">
+                       <a href="{{url_for('delete_q',question_id=question.id)}}" class="action-button" style="color: rgb(180, 39, 39);">
                             <i class="fas fa-trash"></i>
                             <span>delete</span>
                        </a>
@@ -251,13 +251,22 @@
         </div>
 
         <div style="display: flex; flex-direction: column; align-items: center; float: right; margin-left: 10px;">
-          <button class="upvote-btn" onclick="handleVote('{{ answer.id }}', 'upvote')" style="border: none; background: none; color: green;">
-            <h4>Upvote</h4>
-          </button>
-          <span class="vote-score" id="score-{{ answer.id }}">{{ answer.score }}</span>
-          <button class="downvote-btn" onclick="handleVote('{{ answer.id }}', 'downvote')" style="border: none; background: none; color: gray;">
-            <h5>Downvote</h5>
-          </button>
+<button class="upvote-btn" 
+        data-answer-id="{{ answer.id }}" 
+        onclick="handleVote('{{ answer.id }}', 'upvote')" 
+        style="border: none; background: none; color: green;">
+  <h4>Upvote</h4>
+</button>
+
+<span class="vote-score" id="score-{{ answer.id }}">{{ answer.score }}</span>
+
+<button class="downvote-btn" 
+        data-answer-id="{{ answer.id }}" 
+        onclick="handleVote('{{ answer.id }}', 'downvote')" 
+        style="border: none; background: none; color: gray;">
+  <h5>Downvote</h5>
+</button>
+
         </div>
 
         <div class="comment-text">{{ answer.content | safe }}</div>
@@ -276,7 +285,7 @@
   </div>
 
   <!-- Comments toggle inside each answer -->
-  <b style="cursor: pointer; color: #3f51b5;" onclick="toggleComments('{{ answer.id }}')">Comments:</b>
+  <b style="cursor: pointer; color: #7f7f82; " onclick="toggleComments('{{ answer.id }}')"><h5><pre>     Comments:</pre></h5></b>
   <div id="comment-toggle-{{ answer.id }}" style="overflow: hidden; max-height: 0; opacity: 0; display: none; transition: max-height 0.4s ease, opacity 0.4s ease;">
     {% for comment in answer.comments %}
     <div class="coment-box">

@@ -353,7 +353,9 @@ def ban_user(user_id):
 #news
 @app.route('/news')
 def news():
-    return render_template('news.html')
+    x = session.get('user_id')
+    user=User.query.get(x)
+    return render_template('news.html',user=user)
 #index page
 @app.route('/index')
 def index():

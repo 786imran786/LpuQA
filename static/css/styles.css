@@ -453,20 +453,28 @@ font-family: 'Dancing Script', cursive;
     flex-wrap: wrap;
     gap: 1rem;
 }
+.action-buttons {
+    display: flex;          /* puts them in one line */
+    align-items: center;    /* vertically centers icon + text */
+    gap: 15px;              /* space between buttons */
+}
 
 .action-button {
+    color: var(--gray);
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    background: none;
-    border: none;
-    color: var(--gray);
-    font-size: 0.95rem;
+    gap: 6px;               /* spacing between icon & text */
+    background: none;       /* optional, remove default button bg */
+    border: none;           /* optional, remove border */
     cursor: pointer;
-    padding: 0.5rem 0.8rem;
-    border-radius: 6px;
-    transition: var(--transition);
+    font: inherit;          /* inherit text style */
 }
+
+.action-buttons a.action-button {
+    text-decoration: none;  /* remove underline from <a> */
+    color: inherit;         /* match button text color */
+}
+
 
 .action-button:hover {
     background-color: var(--hover-bg);
@@ -1534,12 +1542,7 @@ select.form-input {
         align-self: flex-start;
     }
     
-    .action-buttons {
-        display: flex;
-        gap: 0.5rem;
-        flex-wrap: wrap;
-    }
-    
+
     .form-row {
         flex-direction: column;
         gap: 1rem;

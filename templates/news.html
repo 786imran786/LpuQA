@@ -37,7 +37,46 @@
             gap: 0.5rem;
             margin: 1rem 0;
         }
+        .swiper {
+  width: 100%;
+  height: auto;
+
+  padding: 0 40px; /* gives breathing space for the arrows */
+
+}
+
+.swiper-slide {
+  display: flex;
+  justify-content: center;
+}
+.swiper-button-next,
+.swiper-button-prev {
+  color: var(--primary);
+  top: 45%;
+  width: 40px;
+  height: 40px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+}
+.swiper-button-prev,
+.swiper-button-next {
+
+    opacity: 0.2;
+  transition: opacity 0.3s ease;
+
+}
+
+.swiper-pagination-bullet-active {
+  background: var(--primary);
+}
+
     </style>
+    <link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"
+/>
 </head>
 <body>
     <!-- Header (Same as other pages) -->
@@ -47,15 +86,21 @@
                 <i class="fas fa-bars"></i>
             </button>
             
-            <a href="index.html" class="logo">
-                <i class="fas fa-graduation-cap"></i>
-                <span>UniQ</span>
+            <a href="{{ url_for('index') }}" class="logo">
+<img src="{{ url_for('static', filename='uploads/logo.png') }}" 
+     alt="Logo" 
+     style="height: 50px; width: auto; max-width: 100%; object-fit: contain;">
+     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600&display=swap" rel="stylesheet">
+<span class="logo-text">AskPu</span>
+
             </a>
             
-            <div class="search-container">
-                <i class="fas fa-search search-icon"></i>
-                <input type="text" class="search-bar" placeholder="Search news, articles...">
-            </div>
+             <div class="search-container">
+        <i class="fas fa-search search-icon"></i>
+        <form method="GET" action="{{ url_for('search') }}">
+        <input type="text" class="search-bar" name="query" placeholder="Search questions, answers, topics...">
+    </form>
+    </div>
             
             <div class="nav-icons">
                 
@@ -68,8 +113,12 @@
                     <i class="fas fa-moon toggle-icon" id="theme-icon"></i>
                     <span class="toggle-text">Dark Mode</span>
                 </div>
-                <a href="profile.html" class="user-avatar">
-                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User Avatar">
+         <a href="{{url_for('profile')}}" class="user-avatar" id="profile-btn">
+                    {% if user.image %}
+  <img src="{{ user.image }}" alt="Avatar">
+{% else %}
+  <img src="https://api.dicebear.com/6.x/avataaars/svg?seed={{ user.username }}" alt="Default Avatar">
+{% endif %}
                 </a>
             </div>
         </div>
@@ -148,38 +197,90 @@
                 </div>
                 
                 <!-- Featured News -->
-                <div class="news-card content-card" style="margin-bottom: 1.5rem;">
-                    <div class="card-header">
-                        <div class="user-info">
-                            <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Reporter" style="width:42px;height:42px;">
-                            <div class="user-details">
-                                <div class="user-name">Campus Chronicle</div>
-                                <div class="user-meta">Published 2 hours ago</div>
-                            </div>
-                        </div>
-                        <span class="news-category academic">Academic</span>
-                    </div>
-                    <img src="https://source.unsplash.com/random/800x400/?university,library" alt="News Image" style="width:100%; border-radius:8px; margin:1rem 0;">
-                    <h3 style="font-size:1.3rem; margin-bottom:0.8rem;">Stanford Introduces New AI Ethics Course for All Majors</h3>
-                    <div class="question-content">
-                        <p>Starting Fall 2024, Stanford University will require all undergraduate students to complete a course on AI ethics, regardless of their major. The initiative aims to prepare students for the ethical challenges of emerging technologies...</p>
-                    </div>
-                    <div class="question-footer" style="border-top:none; padding-top:0;">
-                        <button class="action-button">
-                            <i class="fas fa-share"></i>
-                            <span>Share</span>
-                        </button>
-                        <button class="action-button">
-                            <i class="far fa-bookmark"></i>
-                            <span>Save</span>
-                        </button>
-                        <a href="news-detail.html" class="action-button" style="margin-left:auto;">
-                            <span>Read Full Story</span>
-                            <i class="fas fa-chevron-right"></i>
-                        </a>
-                    </div>
-                </div>
-                
+<!-- Featured News Carousel -->
+<div class="swiper" style="margin-bottom: 2rem;">
+  <div class="swiper-wrapper">
+
+    <!-- Slide 1 -->
+    <div class="swiper-slide">
+      <div class="news-card content-card">
+        <div class="card-header">
+          <div class="user-info">
+            <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Reporter" style="width:42px;height:42px;">
+            <div class="user-details">
+              <div class="user-name">Campus Chronicle</div>
+              <div class="user-meta">Published 2 hours ago</div>
+            </div>
+          </div>
+          <span class="news-category academic">Academic</span>
+        </div>
+        <img src="https://source.unsplash.com/random/800x400/?university,library" alt="News Image" style="width:100%; border-radius:8px; margin:1rem 0;">
+        <h3 style="font-size:1.3rem; margin-bottom:0.8rem;">Stanford Introduces New AI Ethics Course for All Majors</h3>
+        <div class="question-content">
+          <p>Starting Fall 2024, Stanford University will require all undergraduate students to complete a course on AI ethics, regardless of their major...</p>
+        </div>
+        <div class="question-footer" style="border-top:none; padding-top:0;">
+          <button class="action-button">
+            <i class="fas fa-share"></i>
+            <span>Share</span>
+          </button>
+          <button class="action-button">
+            <i class="far fa-bookmark"></i>
+            <span>Save</span>
+          </button>
+          <a href="news-detail.html" class="action-button" style="margin-left:auto;">
+            <span>Read Full Story</span>
+            <i class="fas fa-chevron-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+<div class="swiper-slide">
+      <div class="news-card content-card">
+        <div class="card-header">
+          <div class="user-info">
+            <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Reporter" style="width:42px;height:42px;">
+            <div class="user-details">
+              <div class="user-name">Campus Chronicle</div>
+              <div class="user-meta">Published 2 hours ago</div>
+            </div>
+          </div>
+          <span class="news-category academic">Academic</span>
+        </div>
+        <img src="https://source.unsplash.com/random/800x400/?university,library" alt="News Image" style="width:100%; border-radius:8px; margin:1rem 0;">
+        <h3 style="font-size:1.3rem; margin-bottom:0.8rem;">Stanford Introduces New AI Ethics Course for All Majors</h3>
+        <div class="question-content">
+          <p>Starting Fall 2024, Stanford University will require all undergraduate students to complete a course on AI ethics, regardless of their major...</p>
+        </div>
+        <div class="question-footer" style="border-top:none; padding-top:0;">
+          <button class="action-button">
+            <i class="fas fa-share"></i>
+            <span>Share</span>
+          </button>
+          <button class="action-button">
+            <i class="far fa-bookmark"></i>
+            <span>Save</span>
+          </button>
+          <a href="news-detail.html" class="action-button" style="margin-left:auto;">
+            <span>Read Full Story</span>
+            <i class="fas fa-chevron-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add more slides here like Slide 2, Slide 3 if needed -->
+
+  </div>
+
+  <!-- Swiper navigation buttons -->
+  <div class="swiper-button-prev"></div>
+  <div class="swiper-button-next"></div>
+
+  <!-- Swiper pagination dots -->
+  <div class="swiper-pagination"></div>
+</div>
+         
                 <!-- News Grid -->
                 <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
                     <!-- News Item 1 -->
@@ -266,7 +367,25 @@
             
         </div>
     </div>
-    
+    <!-- Swiper JS -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+<script>
+  var swiper = new Swiper('.swiper', {
+    loop: true,
+    autoplay: {
+      delay: 5000,
+    },
+    pagination: {
+      el: '.swiper-pagination',
+      clickable: true,
+    },
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+  });
+</script>
+
      <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 
 </body>
